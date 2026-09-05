@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "id": "mughal",
+  "version": "1.0.0",
+  "name": "Mughal Gardens",
+  "description": "Original miniature-inspired garden courts, ivory and floral-inlay cards, lapis and turquoise geometry, and a gentle original oud- and reed-inspired instrumental soundscape.",
+  "author": "Mangoidiots Solitaire · Generated with OpenAI GPT-6 Astra",
+  "files": [
+    {
+      "path": "cards/0.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5938,
+      "sha256": "a0d12c53ec5a86ca632275f01be98d90c78e026ef34c3be0df29ea2ff198eb53"
+    },
+    {
+      "path": "cards/1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4259,
+      "sha256": "33a0f9b65d4d5fa2fd3d9499152621d8776f53556c23e74f135f17a394b36d3d"
+    },
+    {
+      "path": "cards/2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4446,
+      "sha256": "ba3518911644094af6be3a15d58a694cd61fbc4f4a65f37fe5b9fd78e5fd0e19"
+    },
+    {
+      "path": "cards/3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4632,
+      "sha256": "8927372e8a946f53bdd556058d513ecfbe5e4fcd12cdaa0a29d96dfc81801772"
+    },
+    {
+      "path": "cards/4.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4819,
+      "sha256": "44ed1f5a484684dbfe1df776970bdf50ec3d941624d5f0ea8c327d6b6ac832ed"
+    },
+    {
+      "path": "cards/5.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5005,
+      "sha256": "0e82bee2b1639e7770dc9ddf3cf1722602f2abb8cdbe62f2f2783a8a6b251cf4"
+    },
+    {
+      "path": "cards/6.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5192,
+      "sha256": "11d77b691b9529393620d5289f7e417d7dd04835e69040c3b03b97d486f850a3"
+    },
+    {
+      "path": "cards/7.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5381,
+      "sha256": "1766ab13988c8ffd7c45955e07c58a1d9a3644abfdc46f630cac5b5d9822a71a"
+    },
+    {
+      "path": "cards/8.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5569,
+      "sha256": "3d84722ab86a8e4b2d261c20867fefeef9686540aaf7e8785d58531cc35e279b"
+    },
+    {
+      "path": "cards/9.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5762,
+      "sha256": "3a4c9927e235fdc60b2869f6c76f83e925e1837d1cfb927f63298a46019febac"
+    },
+    {
+      "path": "cards/10.svg",
+      "mime": "image/svg+xml",
+      "bytes": 18952,
+      "sha256": "0b9a737e6374c6aeaab8c455f970280f6dae15f332159a90be26d4026e8e8fb3"
+    },
+    {
+      "path": "cards/11.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19568,
+      "sha256": "1605b4ff4cd3d9bb604c94c85a9803815841608f2aab9ef61dc645a6e716dec8"
+    },
+    {
+      "path": "cards/12.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19653,
+      "sha256": "7d0233f251f928396770042972603bf0e9baf6e7468161b35e3784df5e1ae331"
+    },
+    {
+      "path": "cards/13.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5893,
+      "sha256": "4887aafdeae4fe68a0cf4d65aff47b4a4cf383726cc85f7e1d8415a1f7fd5ce3"
+    },
+    {
+      "path": "cards/14.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4199,
+      "sha256": "c682506d7caec291364af0ef358951223fec42879520df308d8e68f4965bf4d0"
+    },
+    {
+      "path": "cards/15.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4371,
+      "sha256": "d89470c5bc5c80d52121ab5888ae29b5645469b10affc856e5e69a239751ae93"
+    },
+    {
+      "path": "cards/16.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4542,
+      "sha256": "97f9301a3af74a3ccb8085e01528e35dbfed0457152e185824de389917c7e305"
+    },
+    {
+      "path": "cards/17.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4714,
+      "sha256": "839782212d487f55b0fe662fb836140e1fabd4ae1f5e24e839961b886b66518d"
+    },
+    {
+      "path": "cards/18.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4885,
+      "sha256": "5b74e4efbf5b2377eed9768f5b72bdee0e6037e4f3df5a3146e0fc217e4dde34"
+    },
+    {
+      "path": "cards/19.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5057,
+      "sha256": "1b8c6e2fb48a50770aab5aec712a987ef92f7ea326421b141135f6be7cd9c10d"
+    },
+    {
+      "path": "cards/20.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5231,
+      "sha256": "68131a75feeb05e11b313e84561d851f2ce653d126e9d8a899a178975691a917"
+    },
+    {
+      "path": "cards/21.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5404,
+      "sha256": "7f70438f2059bf1d7625088e0ffb333caf5f27eb30079ddcc38629f55f2152ca"
+    },
+    {
+      "path": "cards/22.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5582,
+      "sha256": "839142858c56fe3164193a9f6d55ccdb2da57ec4839dbb243f8a34d282633a6f"
+    },
+    {
+      "path": "cards/23.svg",
+      "mime": "image/svg+xml",
+      "bytes": 18872,
+      "sha256": "0aa32a3caf677b9486b7b9e85c527e7d87b3a0d6b76f889c350b4c2604a04c22"
+    },
+    {
+      "path": "cards/24.svg",
+      "mime": "image/svg+xml",
+      "bytes": 18934,
+      "sha256": "073ecf87a9cda33204434e03b68dad877650443623f5e00e707ce1237a3e1ee9"
+    },
+    {
+      "path": "cards/25.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19950,
+      "sha256": "eaac2d4080a218bd8f6c3980be26ca6142147321f88bd0e7991f47e17f170c93"
+    },
+    {
+      "path": "cards/26.svg",
+      "mime": "image/svg+xml",
+      "bytes": 6041,
+      "sha256": "f2523211905b1318f326d5a9ece5e13a4b3ea549fb1d9f54bb821e2992f0edf9"
+    },
+    {
+      "path": "cards/27.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4397,
+      "sha256": "57da7e58aea2f5f212925bf84ab5f8914195b99bd08b27dd9fcab890a7327dc1"
+    },
+    {
+      "path": "cards/28.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4619,
+      "sha256": "1fe8df39be2ae1c202f30c75308ad704ee4179fa089a4f16b0714068ea403036"
+    },
+    {
+      "path": "cards/29.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4840,
+      "sha256": "68e5ac1c550bc464652f291c72db158f0d912b8cdd119668823ccc176d5e5a62"
+    },
+    {
+      "path": "cards/30.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5062,
+      "sha256": "e3ac67acf6e56195149a1b56e3dc69db2d185e6863f4b36a1eef47751b5dd30f"
+    },
+    {
+      "path": "cards/31.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5283,
+      "sha256": "c8ecd0e519e14a7a691af6a7ff42bdb8302948a9e606f2bdad6ac18e9341df0a"
+    },
+    {
+      "path": "cards/32.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5505,
+      "sha256": "ab8809743737664e33451873e61b824801bbea672ae99e1417104175b3a62982"
+    },
+    {
+      "path": "cards/33.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5729,
+      "sha256": "303215c33a159df4e42d22c09247e536eb859f915de8bc3ee683685d29ce8b42"
+    },
+    {
+      "path": "cards/34.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5952,
+      "sha256": "e62c48f3854c35d5c8dee37ea47abbab4dc9193f333b3c15c8e184f6b4583cbc"
+    },
+    {
+      "path": "cards/35.svg",
+      "mime": "image/svg+xml",
+      "bytes": 6180,
+      "sha256": "47722d278161160b66433df4a9fe106982f0a16ffaebc6d3302496d2b7b24d98"
+    },
+    {
+      "path": "cards/36.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19876,
+      "sha256": "928eeb482257fc6f40bae94feb62155d9cfa9c67148f0ab7fabaa8148562f7a8"
+    },
+    {
+      "path": "cards/37.svg",
+      "mime": "image/svg+xml",
+      "bytes": 18695,
+      "sha256": "ad2199d6ea9fef050d28a6a76a150f408257ab3734d8010a57516f36f3f3657b"
+    },
+    {
+      "path": "cards/38.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19213,
+      "sha256": "b463e6ffeef7d0ff1661aa8bfad9e6b416750fa343cac8f31ff78ab1f90fe0bb"
+    },
+    {
+      "path": "cards/39.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5753,
+      "sha256": "8e940e7578975cbf00a99f008a53061f11543147c0437a2063c1fb8405ad3992"
+    },
+    {
+      "path": "cards/40.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4011,
+      "sha256": "ed8351395e67350d5926089f0c4d1e16535ce4408f6daddadf6fbaa65c26a8b3"
+    },
+    {
+      "path": "cards/41.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4135,
+      "sha256": "9b13d659971cef86b8a48e607805fd601f483f2c04a455caf05e0b49efa8be24"
+    },
+    {
+      "path": "cards/42.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4258,
+      "sha256": "1f0c7f3c33806e2f912032f3b9da01bd7dddc73663a161ac79cbebf282b6b4f9"
+    },
+    {
+      "path": "cards/43.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4382,
+      "sha256": "4a8bbada356046f0dfebef1eadbf910a82b77c1c569429d2b63555eb644feb62"
+    },
+    {
+      "path": "cards/44.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4505,
+      "sha256": "657e74c17a98790d88d19a1175247e3e91e552853c0445368f4b744797b52bd3"
+    },
+    {
+      "path": "cards/45.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4629,
+      "sha256": "e17c848078c337eaf7789b5dfdbfb66aa72ebc0e666126cc698fc87c78ab9036"
+    },
+    {
+      "path": "cards/46.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4755,
+      "sha256": "60c6057078724e6845670111cee304d162c508ae37693fefa37dec99280f80ac"
+    },
+    {
+      "path": "cards/47.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4880,
+      "sha256": "6d91565b2db084db863ba20c9a2f51583989a6a8b4b3c747ca723743c06f72b7"
+    },
+    {
+      "path": "cards/48.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5010,
+      "sha256": "e88a26a6cc876d6d22c4d6b111de8d535dedd03c4bd0733338b87c28de72603a"
+    },
+    {
+      "path": "cards/49.svg",
+      "mime": "image/svg+xml",
+      "bytes": 18787,
+      "sha256": "d103c23200182404c4da24baeec57be1d340a574659aac4de1edd8f32fa2741e"
+    },
+    {
+      "path": "cards/50.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19587,
+      "sha256": "0820bbb634f8cc3d1c8cfcb96887172624003ae8bc882b74ab15a77233511428"
+    },
+    {
+      "path": "cards/51.svg",
+      "mime": "image/svg+xml",
+      "bytes": 19129,
+      "sha256": "56a116acd753b63f26d410339f2fb8f42480e814022ecea94babb5b1879dd1ba"
+    },
+    {
+      "path": "table/card-back.svg",
+      "mime": "image/svg+xml",
+      "bytes": 22738,
+      "sha256": "1ce51dc078610a5dc60a995d16a20d9c5e84706599a48f95a4f9cd55ad0e8a50"
+    },
+    {
+      "path": "table/garden.svg",
+      "mime": "image/svg+xml",
+      "bytes": 7681,
+      "sha256": "3d6275cacdf9e8d66d2bcf6642baec997878b3e4fbe12627b189c53175c27506"
+    },
+    {
+      "path": "audio/shuffle.wav",
+      "mime": "audio/wav",
+      "bytes": 39734,
+      "sha256": "b3f52e08b586e91d80d8072522f50f0e8b5f35af97fe6dd448a35d4f05352a12"
+    },
+    {
+      "path": "audio/draw.wav",
+      "mime": "audio/wav",
+      "bytes": 16362,
+      "sha256": "f2ab9314ecb654ec73a360dd33c1c3b62554cd4916f2e9bebe7b32a84c0744a7"
+    },
+    {
+      "path": "audio/place.wav",
+      "mime": "audio/wav",
+      "bytes": 22976,
+      "sha256": "a4f5e43ec6590e8e3f56451616b36687af656458ca3f3e164d91b978784de52d"
+    },
+    {
+      "path": "audio/invalid.wav",
+      "mime": "audio/wav",
+      "bytes": 25622,
+      "sha256": "1553ce04fa12c4f73be68ac37f5bc06f16603438e857c51e5193827a30a5707c"
+    },
+    {
+      "path": "audio/victory.wav",
+      "mime": "audio/wav",
+      "bytes": 185264,
+      "sha256": "806db4280c043ca3d9751f3db077752fddc0d12ff3b23abee5030276f44c211b"
+    },
+    {
+      "path": "audio/music.wav",
+      "mime": "audio/wav",
+      "bytes": 1270124,
+      "sha256": "60f1573a7938baf97e69efc3e28b35daf42a5825b1db5be591f8d239220206cb"
+    }
+  ],
+  "cards": {
+    "0": "cards/0.svg",
+    "1": "cards/1.svg",
+    "2": "cards/2.svg",
+    "3": "cards/3.svg",
+    "4": "cards/4.svg",
+    "5": "cards/5.svg",
+    "6": "cards/6.svg",
+    "7": "cards/7.svg",
+    "8": "cards/8.svg",
+    "9": "cards/9.svg",
+    "10": "cards/10.svg",
+    "11": "cards/11.svg",
+    "12": "cards/12.svg",
+    "13": "cards/13.svg",
+    "14": "cards/14.svg",
+    "15": "cards/15.svg",
+    "16": "cards/16.svg",
+    "17": "cards/17.svg",
+    "18": "cards/18.svg",
+    "19": "cards/19.svg",
+    "20": "cards/20.svg",
+    "21": "cards/21.svg",
+    "22": "cards/22.svg",
+    "23": "cards/23.svg",
+    "24": "cards/24.svg",
+    "25": "cards/25.svg",
+    "26": "cards/26.svg",
+    "27": "cards/27.svg",
+    "28": "cards/28.svg",
+    "29": "cards/29.svg",
+    "30": "cards/30.svg",
+    "31": "cards/31.svg",
+    "32": "cards/32.svg",
+    "33": "cards/33.svg",
+    "34": "cards/34.svg",
+    "35": "cards/35.svg",
+    "36": "cards/36.svg",
+    "37": "cards/37.svg",
+    "38": "cards/38.svg",
+    "39": "cards/39.svg",
+    "40": "cards/40.svg",
+    "41": "cards/41.svg",
+    "42": "cards/42.svg",
+    "43": "cards/43.svg",
+    "44": "cards/44.svg",
+    "45": "cards/45.svg",
+    "46": "cards/46.svg",
+    "47": "cards/47.svg",
+    "48": "cards/48.svg",
+    "49": "cards/49.svg",
+    "50": "cards/50.svg",
+    "51": "cards/51.svg"
+  },
+  "back": "table/card-back.svg",
+  "background": "table/garden.svg",
+  "audio": {
+    "shuffle": "audio/shuffle.wav",
+    "draw": "audio/draw.wav",
+    "place": "audio/place.wav",
+    "invalid": "audio/invalid.wav",
+    "victory": "audio/victory.wav",
+    "music": "audio/music.wav"
+  },
+  "palette": {
+    "table": "#173b53",
+    "accent": "#e4c783"
+  },
+  "attribution": "Generated with OpenAI GPT-6 Astra. Original procedural vector artwork and original locally synthesized instrumental audio for Mangoidiots Solitaire (https://venkatarangan.github.io/mangoidiots-solitaire/). Respectful creative inspiration from Mughal-period Indian miniature painting, court costume, floral inlay, scalloped arches, and charbagh gardens; not authenticated portraits, named historical figures, or a reconstruction. The newly composed instrumental music draws on broad Sufi, Indo-Persian and Islamicate cultural influences through oud-like plucks, ney/reed-like lead, and frame-drum-inspired synthesis. It is not an authentic historical or devotional performance. No Quran recitation, adhan, religious vocals, sacred text, downloaded recordings, sampled instruments, external artwork, or copied commercial cards are used."
+}

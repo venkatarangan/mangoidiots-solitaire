@@ -1,0 +1,14 @@
+node_modules/
+test-results/
+playwright-report/
+dist/
+build/
+generated/
+tools/assets/mughal/*-proof.png
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

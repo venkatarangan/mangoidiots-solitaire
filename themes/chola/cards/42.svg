@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="336" viewBox="0 0 240 336" role="img" aria-label="4 of diamonds; original Chola-inspired royal court illustration">
+    <title>4 of diamonds</title><defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffcf0"/><stop offset=".55" stop-color="#fff8e6"/><stop offset="1" stop-color="#eee0ba"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff1b0"/><stop offset=".25" stop-color="#dba943"/><stop offset=".54" stop-color="#ad7224"/><stop offset=".77" stop-color="#f6d578"/><stop offset="1" stop-color="#996124"/></linearGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="1" y2=".5"><stop stop-color="#352c63"/><stop offset=".38" stop-color="#b29ace"/><stop offset=".59" stop-color="#624794"/><stop offset="1" stop-color="#352c63"/></linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2=".4"><stop stop-color="#b66e40"/><stop offset=".35" stop-color="#e7ad6f"/><stop offset=".65" stop-color="#d09053"/><stop offset="1" stop-color="#9c5937"/></linearGradient>
+    <linearGradient id="arch" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#352c63"/><stop offset=".58" stop-color="#624794"/><stop offset="1" stop-color="#cbaa62"/></linearGradient>
+    <radialGradient id="halo"><stop stop-color="#fff0ad" stop-opacity=".8"/><stop offset=".75" stop-color="#dfb963" stop-opacity=".12"/><stop offset="1" stop-color="#d6a341" stop-opacity="0"/></radialGradient>
+  </defs>
+    <rect x="1" y="1" width="238" height="334" rx="15" fill="url(#paper)" stroke="#c5a96a" stroke-width="2"/>
+    <rect x="7" y="7" width="226" height="322" rx="11" fill="none" stroke="#d5bc82" stroke-width=".65"/>
+    <path d="M65 63Q120 45 175 63M65 273Q120 291 175 273" fill="none" stroke="#dbbf7a" stroke-width=".9"/>
+      <g transform="translate(82 86) rotate(0) scale(0.8571428571428571)"><path d="M0-21L16 0L0 21L-16 0Z" fill="#b3233d" /></g><g transform="translate(158 86) rotate(0) scale(0.8571428571428571)"><path d="M0-21L16 0L0 21L-16 0Z" fill="#b3233d" /></g><g transform="translate(82 250) rotate(180) scale(0.8571428571428571)"><path d="M0-21L16 0L0 21L-16 0Z" fill="#b3233d" /></g><g transform="translate(158 250) rotate(180) scale(0.8571428571428571)"><path d="M0-21L16 0L0 21L-16 0Z" fill="#b3233d" /></g>
+      <g transform="translate(120 303) scale(0.25)">
+    <path d="M0 13C-16 12-24-1-21-13C-10-10-3-4 0 13Z" fill="#caa75c" />
+    <path d="M0 13C16 12 24-1 21-13C10-10 3-4 0 13Z" fill="#caa75c" />
+    <path d="M0 13C-10 4-12-12 0-24C12-12 10 4 0 13Z" fill="#e8d099" />
+    <path d="M-25 3Q0 23 25 3Q16 24 0 23Q-16 24-25 3Z" fill="#caa75c" />
+    <path d="M-17 27L17 27" fill="none" stroke="#e8d099" stroke-width="2" />
+  </g><text x="28" y="39" text-anchor="middle" fill="#b3233d" font-family="Georgia,serif" font-weight="bold" font-size="37">4</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-21L16 0L0 21L-16 0Z" fill="#b3233d" /></g><g transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#b3233d" font-family="Georgia,serif" font-weight="bold" font-size="37">4</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-21L16 0L0 21L-16 0Z" fill="#b3233d" /></g></g>
+  </svg>

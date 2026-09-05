@@ -1,0 +1,25 @@
+{
+  "name": "mangoidiots-solitaire",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Offline-first Mangoidiots Draw 1 Klondike with Chola and Mughal themes on GitHub Pages.",
+  "scripts": {
+    "dev": "npm run build && npm run preview",
+    "preview": "node tools/pages-server.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && npm run assets && node tools/build.mjs",
+    "test": "node --test tests/game.test.mjs tests/scoring.test.mjs tests/themes.test.mjs tests/mughal-theme.test.mjs tests/drop-targets.test.mjs tests/identity.test.mjs tests/pages.test.mjs && playwright test",
+    "test:browser": "playwright test",
+    "assets": "node tools/assets/generate.mjs && node tools/assets/mughal/generate.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "phaser": "^4.2.1"
+  }
+}

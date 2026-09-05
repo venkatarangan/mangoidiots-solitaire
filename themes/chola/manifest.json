@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "id": "chola",
+  "version": "1.0.0",
+  "name": "Chola Royal Court",
+  "description": "Jewel-toned original royal-court illustrations, parchment cards, bronze-gold geometry, a quiet courtyard table, and gentle instrument-inspired synthesized sound.",
+  "author": "Mangoidiots Solitaire · original work with GitHub Copilot assistance",
+  "files": [
+    {
+      "path": "cards/0.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5749,
+      "sha256": "07c03c3dbdbaefdfbdff658cf100e66ccd7c09d194483c82fafc56dddd5e57a6"
+    },
+    {
+      "path": "cards/1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3318,
+      "sha256": "1b2b425e1d976501b36a916b4d3c0ee742afebd007dc7bdf04333445c75fcbab"
+    },
+    {
+      "path": "cards/2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3505,
+      "sha256": "372e699ee3582549c7d7475ae8a2123e96684a4f2adf098cc1092640cf162ecf"
+    },
+    {
+      "path": "cards/3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3691,
+      "sha256": "7a2464b124452fbaeec899b7ca1a0ff651e16334f73ad3e645c28817055a148c"
+    },
+    {
+      "path": "cards/4.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3878,
+      "sha256": "01b25a247f93bc13388fee7e7dee5c66a93782dce0af0c17f5ba78d3610732c9"
+    },
+    {
+      "path": "cards/5.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4064,
+      "sha256": "5ec882063e4bbb8f37b868ec4bf7631b69f614a4df4c2cbe02b2a91d0d3d13a0"
+    },
+    {
+      "path": "cards/6.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4251,
+      "sha256": "132a326c3c2bbdc4b74a86ce1897793e5a4dfeec1d9e50b74260738531d9d66c"
+    },
+    {
+      "path": "cards/7.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4440,
+      "sha256": "ed4ecda0948dbc2a5859ad2dbb798962daba77624f10f452387b8e0d95bbfe71"
+    },
+    {
+      "path": "cards/8.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4628,
+      "sha256": "90ed57fc0564ab9d96680e670bd25cf6b5cdb1c2f15b3c3b81b9220f7cd624b0"
+    },
+    {
+      "path": "cards/9.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4821,
+      "sha256": "b36f688ce9c79805831e849594afbc9aa7735205f299855eeee2b41fe218dc8f"
+    },
+    {
+      "path": "cards/10.svg",
+      "mime": "image/svg+xml",
+      "bytes": 12473,
+      "sha256": "12d5da33995cebc28925793188c36ee84867c3cafb302e23bb470f4ab66ab2c7"
+    },
+    {
+      "path": "cards/11.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13336,
+      "sha256": "b05e5dd0476dbed3054ff8b7d8def69aa07cb94b79de6fa29ec249e4cba90037"
+    },
+    {
+      "path": "cards/12.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13989,
+      "sha256": "088778854c2f14cd8d07c3ef4f53dcee8e025232abf083c543ed6de84726c2b8"
+    },
+    {
+      "path": "cards/13.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5704,
+      "sha256": "8e01c95c9a04ae6c64ae8476411d736e29c14fe3a3bc69612ac460e67c97ac25"
+    },
+    {
+      "path": "cards/14.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3258,
+      "sha256": "ed7157c59ce13cc73f2dc17ece6763e78a13b076ceaff589c6ccb2d81a60bec9"
+    },
+    {
+      "path": "cards/15.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3430,
+      "sha256": "9bf7c11cf824ee57ea4618c4afb0e79d584d853b66dfee73df9978ac01b34ec7"
+    },
+    {
+      "path": "cards/16.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3601,
+      "sha256": "a85a6044c74279088b1e7fe21aab52756b6527c5ba7c35b3a74435f4d3dccb78"
+    },
+    {
+      "path": "cards/17.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3773,
+      "sha256": "dcbda4e03582c20bff66adbd585692694cd081972974e6ece94acda232af2adc"
+    },
+    {
+      "path": "cards/18.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3944,
+      "sha256": "04124f4682fd3d26052e85a616ee91287da3990a7f02c7f6440dc5e9933120fd"
+    },
+    {
+      "path": "cards/19.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4116,
+      "sha256": "4214df49633709bf2b315ecbce3566e43273e294a035abece32a0c0b522389e4"
+    },
+    {
+      "path": "cards/20.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4290,
+      "sha256": "3c601b76c18337e53ad44fe0bd5db5059470333da7e30816ec87783b5ebe5456"
+    },
+    {
+      "path": "cards/21.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4463,
+      "sha256": "af4b1189daab4d7572742db2ea5123a91d2286f643c41b5bb9fa1eb6c60a9051"
+    },
+    {
+      "path": "cards/22.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4641,
+      "sha256": "d60b867badb566f1b1daaadbf32dcd61962efe85a6f9cb4704872206f44e7505"
+    },
+    {
+      "path": "cards/23.svg",
+      "mime": "image/svg+xml",
+      "bytes": 12466,
+      "sha256": "988171f088da4d78673397524f4309ae6f1daa2b6b0b7efd8eea42dc724bdd40"
+    },
+    {
+      "path": "cards/24.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13823,
+      "sha256": "61d1146a381c7efde249300d58951469af92f52e9026bb7c6f18fc25224fbe1b"
+    },
+    {
+      "path": "cards/25.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13366,
+      "sha256": "2415f9f069276f0b7a52ca5ad93dc933d3f874b9bb98171cf049042abf6c9081"
+    },
+    {
+      "path": "cards/26.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5852,
+      "sha256": "49a32b440334793c8f66d780602c7aa6556e7fad86091d67739d5d8635f34091"
+    },
+    {
+      "path": "cards/27.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3456,
+      "sha256": "99cbd18115607ed4fff37cc9ce74b3783a514994e7b8950a2d167212c05ba523"
+    },
+    {
+      "path": "cards/28.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3678,
+      "sha256": "4a13177b0657d451f8fdf686400e499e0ef4e96080c40c1329bbe58b9630bd14"
+    },
+    {
+      "path": "cards/29.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3899,
+      "sha256": "906acb9fcb5c43b55e5a48d3b8fb477a1ffca89c5d7e016bdb7b58b9aeef568c"
+    },
+    {
+      "path": "cards/30.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4121,
+      "sha256": "106d10ebf138b21683cdc0b99ec7f5b4f1ec2b617dcf2f9ce2b0e65dfd1e9430"
+    },
+    {
+      "path": "cards/31.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4342,
+      "sha256": "dd6cdfa2d51651ee81343529940cb93509ddb20da100bbe32407019c7e083670"
+    },
+    {
+      "path": "cards/32.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4564,
+      "sha256": "e28c818e73193366a44c04ad152a783bc3a2bc6dca4080219febb89231cf0bd0"
+    },
+    {
+      "path": "cards/33.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4788,
+      "sha256": "232dcbaffd5986ccaf24b4e0901eef3cec799d9aaaa95a8e3bd292a48d0a8843"
+    },
+    {
+      "path": "cards/34.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5011,
+      "sha256": "e994fd3108db651eef2a6ca20bc18f59c546476c6bd997f7be3fa7a72b12c95c"
+    },
+    {
+      "path": "cards/35.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5239,
+      "sha256": "5d96d6051e61e0fef7bd16c10ee563812afc678f99405991d30fdbd1dc9c9bf9"
+    },
+    {
+      "path": "cards/36.svg",
+      "mime": "image/svg+xml",
+      "bytes": 12589,
+      "sha256": "e6716708fccb2a13ca1d083abe570ef8302ca03acb01c8550e20322ee7ab2d98"
+    },
+    {
+      "path": "cards/37.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13145,
+      "sha256": "34e570d3f03cb9dd9dd5b89a28f5a7761260169ef0e5075544d547edb0f93011"
+    },
+    {
+      "path": "cards/38.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13407,
+      "sha256": "34c0c3dc11d5a3d51509b6e08d341ba8c33b13443c21aba7e9cd9d63c8646974"
+    },
+    {
+      "path": "cards/39.svg",
+      "mime": "image/svg+xml",
+      "bytes": 5564,
+      "sha256": "27c5a6255db0c27b65c7686474ae6ad2c445e743af99aaf344b334952669ad42"
+    },
+    {
+      "path": "cards/40.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3070,
+      "sha256": "c3b69798b508bd75cfce8dabaedb11bc11fea65251b03da2a4d92d72442deaea"
+    },
+    {
+      "path": "cards/41.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3194,
+      "sha256": "2446ff0dee22ffa7ccdee051b4ec092ffba3a2f66d2dd53a13267fc0b3ebbbf5"
+    },
+    {
+      "path": "cards/42.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3317,
+      "sha256": "7c43f14ac9e24baf0be2706be5a9e129221133abec355f9b8a8024422eefee94"
+    },
+    {
+      "path": "cards/43.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3441,
+      "sha256": "ed40821b532476c5fb9aaae2c443aebdb24307f4bdbcf6ed67f0e1adc7cb5694"
+    },
+    {
+      "path": "cards/44.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3564,
+      "sha256": "dda1e8b0e7d5c45d6d989827fe9dc0c4c2d3fafa0df596b826e6a2cea050ebdc"
+    },
+    {
+      "path": "cards/45.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3688,
+      "sha256": "31e27830ef68d8b19d1143964a8f6c9eb9d6017d04624d21467f9fe9b9bb6dc3"
+    },
+    {
+      "path": "cards/46.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3814,
+      "sha256": "6d010dcd65a9fc6748da839185fbbf2a4efe4f3eb728674d37abb7499c9afc5d"
+    },
+    {
+      "path": "cards/47.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3939,
+      "sha256": "efce9f80a38903933fe19d9d64792e2944ed799af701a03b744556552e870b25"
+    },
+    {
+      "path": "cards/48.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4069,
+      "sha256": "ef481b31057a4594a23a2288196b3e1e934d859b245470474ea15784238cc5ab"
+    },
+    {
+      "path": "cards/49.svg",
+      "mime": "image/svg+xml",
+      "bytes": 12286,
+      "sha256": "0946a8a307dc7b824595b4ced6e067590114b910a7a32fbad9258d598e912eda"
+    },
+    {
+      "path": "cards/50.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13056,
+      "sha256": "261c28415c5b953278bf938c2722751b5768ec736e330afcf8de0497656b0ef2"
+    },
+    {
+      "path": "cards/51.svg",
+      "mime": "image/svg+xml",
+      "bytes": 13231,
+      "sha256": "4ad96a14f102140cac232df481bb66f116c1ba5e8bf42504b7856087d4933baa"
+    },
+    {
+      "path": "table/card-back.svg",
+      "mime": "image/svg+xml",
+      "bytes": 18449,
+      "sha256": "4695b61dd45ca887d61ef393488e1a5708b85057aae8b541d4b149a4dfe9abc0"
+    },
+    {
+      "path": "table/courtyard.svg",
+      "mime": "image/svg+xml",
+      "bytes": 16765,
+      "sha256": "86a189ca47c75c990bb57163dd5d2ecbd20a4fc6c377ffd2ec7e8570bd15d01d"
+    },
+    {
+      "path": "audio/shuffle.wav",
+      "mime": "audio/wav",
+      "bytes": 35324,
+      "sha256": "2afa35436a8b7c9b07ac67008f3eb3bcbc6b2dc0bf15cab3136ef29a0d0350ea"
+    },
+    {
+      "path": "audio/draw.wav",
+      "mime": "audio/wav",
+      "bytes": 14156,
+      "sha256": "f37b277e0a0cba6ff1471ab0bc0bbada813dec40569c88d0c35d15649758e4fc"
+    },
+    {
+      "path": "audio/place.wav",
+      "mime": "audio/wav",
+      "bytes": 19008,
+      "sha256": "2d4d19063f4299ad69be345c95d265961d6aae05defb0d8f3adaeb1428e1d6e0"
+    },
+    {
+      "path": "audio/invalid.wav",
+      "mime": "audio/wav",
+      "bytes": 21212,
+      "sha256": "ac7adece620f1b55aa096412c41af3aecb39a9de3ab4d77faff06c7491700f0e"
+    },
+    {
+      "path": "audio/victory.wav",
+      "mime": "audio/wav",
+      "bytes": 167624,
+      "sha256": "cb2711825e4a98e8d2adf172f3ff30efb9f2101ac73bde07cc6f3a51276ac517"
+    },
+    {
+      "path": "audio/music.wav",
+      "mime": "audio/wav",
+      "bytes": 1129004,
+      "sha256": "c1725fe4cf022970857e836a596c487e85e616e2d335bb147b2c10ce4a401d49"
+    }
+  ],
+  "cards": {
+    "0": "cards/0.svg",
+    "1": "cards/1.svg",
+    "2": "cards/2.svg",
+    "3": "cards/3.svg",
+    "4": "cards/4.svg",
+    "5": "cards/5.svg",
+    "6": "cards/6.svg",
+    "7": "cards/7.svg",
+    "8": "cards/8.svg",
+    "9": "cards/9.svg",
+    "10": "cards/10.svg",
+    "11": "cards/11.svg",
+    "12": "cards/12.svg",
+    "13": "cards/13.svg",
+    "14": "cards/14.svg",
+    "15": "cards/15.svg",
+    "16": "cards/16.svg",
+    "17": "cards/17.svg",
+    "18": "cards/18.svg",
+    "19": "cards/19.svg",
+    "20": "cards/20.svg",
+    "21": "cards/21.svg",
+    "22": "cards/22.svg",
+    "23": "cards/23.svg",
+    "24": "cards/24.svg",
+    "25": "cards/25.svg",
+    "26": "cards/26.svg",
+    "27": "cards/27.svg",
+    "28": "cards/28.svg",
+    "29": "cards/29.svg",
+    "30": "cards/30.svg",
+    "31": "cards/31.svg",
+    "32": "cards/32.svg",
+    "33": "cards/33.svg",
+    "34": "cards/34.svg",
+    "35": "cards/35.svg",
+    "36": "cards/36.svg",
+    "37": "cards/37.svg",
+    "38": "cards/38.svg",
+    "39": "cards/39.svg",
+    "40": "cards/40.svg",
+    "41": "cards/41.svg",
+    "42": "cards/42.svg",
+    "43": "cards/43.svg",
+    "44": "cards/44.svg",
+    "45": "cards/45.svg",
+    "46": "cards/46.svg",
+    "47": "cards/47.svg",
+    "48": "cards/48.svg",
+    "49": "cards/49.svg",
+    "50": "cards/50.svg",
+    "51": "cards/51.svg"
+  },
+  "back": "table/card-back.svg",
+  "background": "table/courtyard.svg",
+  "audio": {
+    "shuffle": "audio/shuffle.wav",
+    "draw": "audio/draw.wav",
+    "place": "audio/place.wav",
+    "invalid": "audio/invalid.wav",
+    "victory": "audio/victory.wav",
+    "music": "audio/music.wav"
+  },
+  "palette": {
+    "table": "#123f44",
+    "accent": "#e8bd63"
+  },
+  "attribution": "Original procedural vector artwork and original synthesized audio created for this project with GitHub Copilot assistance. Chola-period royal-court and temple-architecture inspiration; an imaginative modern interpretation, not authenticated historical portraits or reconstructions. Kings evoke the setting of Rajaraja I; queens are imagined court women and jacks imagined commanders, with no asserted identities or relationships. No Microsoft artwork, recordings, online models, sampled instruments, or external media used. Music is a gentle original pentatonic composition with veena-, flute-, and mridangam-inspired synthesis, not a professional performance or an authentic raga rendition."
+}
