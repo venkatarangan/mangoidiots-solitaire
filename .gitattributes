@@ -8,6 +8,7 @@
 *.mjs text eol=lf
 *.svg text eol=lf whitespace=-blank-at-eol
 *.ts text eol=lf
+CNAME text eol=lf
 
 *.png binary
 *.wav binary

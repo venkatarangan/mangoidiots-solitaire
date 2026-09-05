@@ -99,3 +99,13 @@ Spelling and phrasing are otherwise preserved, apart from Markdown formatting.
 > 3. fantastic, go ahead and publish it to github pages as per your suggestion.
 >
 > 4. give me the instructions for cloudflare dns change
+
+## Custom domain and social preview prompt
+
+> 1. I have setup https://solitaire.mangoidiots.com/, it is accessible. So
+> please change the documentation on where to use it to
+> https://solitaire.mangoidiots.com/. Change it in the About page, footer, and
+> other places in GitHub Pages.
+>
+> 2. Create and publish a social Open Graph preview image so that sharing
+> https://solitaire.mangoidiots.com/ on Facebook or WhatsApp shows a preview.

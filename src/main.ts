@@ -410,8 +410,8 @@ async function aboutDialog(): Promise<void> {
   if (!dialog.open) return;
   body.append(brandLogo(), control("p", "Draw 1 Klondike, with original art and instrumental music inspired by India's historical courts. Choose Chola or Mughal Gardens in the Theme collection."));
   const attribution = control("p", "Generated with OpenAI GPT-6 Astra. Play for free at ");
-  const link = control("a", "venkatarangan.github.io/mangoidiots-solitaire");
-  link.href = "https://venkatarangan.github.io/mangoidiots-solitaire/";
+  const link = control("a", "solitaire.mangoidiots.com");
+  link.href = "https://solitaire.mangoidiots.com/";
   attribution.append(link, document.createTextNode(".")); body.append(attribution);
   body.append(control("p", "Version 1.2.0. Free to play, with no account or progress uploads. After the first complete download, your game and downloaded themes work offline. Saves stay in this browser; cloud sync is not included.", "fine-print"));
   body.append(control("p", "An independent game, not affiliated with Microsoft. Artwork and synthesized music are creative interpretations, not historical portraits or recordings.", "fine-print"));

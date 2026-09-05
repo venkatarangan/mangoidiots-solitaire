@@ -43,7 +43,7 @@ jobs:
         run: node --test tests/game.test.mjs tests/scoring.test.mjs tests/themes.test.mjs tests/mughal-theme.test.mjs tests/drop-targets.test.mjs tests/identity.test.mjs tests/pages.test.mjs
 
       - name: Run Pages browser smoke tests
-        run: npx playwright test tests/gameplay.spec.js tests/experience.spec.js --grep "route types|branding|GitHub project path and resume route"
+        run: npx playwright test tests/gameplay.spec.js tests/experience.spec.js --grep "route types|branding|nested Pages path and resume route"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

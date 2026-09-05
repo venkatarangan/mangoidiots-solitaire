@@ -203,12 +203,12 @@ test("a background timer save cannot reject a legal drop or overwrite its new bo
 test("Mangoidiots branding, exact attribution, supplied logo only in About/Help, and both theme choices", async ({ page }, testInfo) => {
   await start(page);
   await expect(page).toHaveTitle("Mangoidiots Solitaire");
-  await expect(page.locator("footer")).toHaveText("Generated with OpenAI GPT-6 Astra. Play for free at venkatarangan.github.io/mangoidiots-solitaire.");
-  await expect(page.locator("footer a")).toHaveAttribute("href", "https://venkatarangan.github.io/mangoidiots-solitaire/");
+  await expect(page.locator("footer")).toHaveText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
+  await expect(page.locator("footer a")).toHaveAttribute("href", "https://solitaire.mangoidiots.com/");
   expect(await page.locator(".app-shell img").count()).toBe(0);
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "About Mangoidiots Solitaire", exact: true }).click();
-  await expect(page.locator("#dialog-body")).toContainText("Generated with OpenAI GPT-6 Astra. Play for free at venkatarangan.github.io/mangoidiots-solitaire.");
+  await expect(page.locator("#dialog-body")).toContainText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
   const image = page.getByAltText("MangoIdiots.com", { exact: true });
   await expect(image).toBeVisible();
   expect(await image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);

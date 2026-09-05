@@ -3,7 +3,7 @@
 **Generated with OpenAI GPT-6 Astra.**
 
 Original vector artwork and locally synthesized instrumental music for
-[Mangoidiots Solitaire](https://venkatarangan.github.io/mangoidiots-solitaire/).
+[Mangoidiots Solitaire](https://solitaire.mangoidiots.com/).
 
 ## Creative direction and provenance
 

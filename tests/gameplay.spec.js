@@ -246,7 +246,7 @@ test("browser restart retains the entire offline game", async ({}, testInfo) => 
   } finally { await context.close(); }
 });
 
-test("GitHub project path and resume route preserve offline state", async ({ page, context }) => {
+test("nested Pages path and resume route preserve offline state", async ({ page, context }) => {
   await page.goto(root);
   await expect(page.locator("#loading")).toBeHidden({ timeout: 40000 });
   await page.locator("#resume").click(); await stockClick(page); await page.locator("#pause").click();

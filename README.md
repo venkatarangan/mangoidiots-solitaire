@@ -6,10 +6,7 @@ remote progress tracking.
 
 **Generated with OpenAI GPT-6 Astra.**
 
-- Current Pages address:
-  <https://venkatarangan.github.io/mangoidiots-solitaire/>
-- Planned custom address:
-  <https://solitaire.mangoidiots.com/>
+Play at <https://solitaire.mangoidiots.com/>.
 
 ## Features
 
@@ -32,14 +29,13 @@ third-party runtime services.
 
 ## Play and install
 
-Open the Pages address in a current Chrome, Edge, Firefox, or Safari browser.
+Open <https://solitaire.mangoidiots.com/> in a current Chrome, Edge, Firefox,
+or Safari browser.
 Allow the first download to complete before going offline. Use the browser's
 **Install app** or **Add to Home Screen** action if you want an app-like shortcut.
 
 Progress, preferences, Undo state, and game history remain in that browser
-profile. They are not uploaded or synchronized. Browser storage belongs to an
-origin, so the temporary `github.io` address and the future custom domain have
-separate saves.
+profile. They are not uploaded or synchronized.
 
 ## Development
 
@@ -63,8 +59,7 @@ http://127.0.0.1:4173/mangoidiots-solitaire/
 
 `npm run build` performs type checking, regenerates both deterministic theme
 packs, builds the application, and writes the complete static site to `dist`.
-The build uses relative URLs, so the same artifact works at the GitHub project
-path and at the root of the custom domain.
+The build uses relative URLs so the artifact works from the custom-domain root.
 
 Run all tests:
 
@@ -95,20 +90,16 @@ deployment from the tracked source and lockfile.
 
 ### Custom domain
 
-The intended domain is `solitaire.mangoidiots.com`. After its DNS record points
-to GitHub Pages, configure that exact name under **Repository Settings → Pages →
-Custom domain**, wait for the DNS check and certificate, then enable
-**Enforce HTTPS**.
-
-Do not add a `CNAME` file manually before the DNS record is ready: doing so can
-make the temporary `github.io` address redirect to a hostname that does not yet
-resolve.
+The production address is <https://solitaire.mangoidiots.com/>. GitHub Pages
+serves it over enforced HTTPS, and `public/CNAME` keeps the deployment bound to
+that hostname.
 
 ## Static output
 
 The `dist` directory contains:
 
 - `index.html` and `resume/index.html`
+- `CNAME` and `social-preview.png`
 - hashed JavaScript, CSS, and logo assets
 - PWA icons and `manifest.webmanifest`
 - `sw.js` with a content-derived offline cache version

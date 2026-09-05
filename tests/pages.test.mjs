@@ -17,9 +17,11 @@ test("Pages output is complete and contains no server-side deployment files", as
   const inventory = await files("dist");
   for (const required of [
     ".nojekyll",
+    "CNAME",
     "index.html",
     "manifest.webmanifest",
     "resume/index.html",
+    "social-preview.png",
     "sw.js",
     "themes.json",
     "themes/chola-1.0.0.zip",
@@ -35,12 +37,16 @@ test("Pages output is complete and contains no server-side deployment files", as
   ]);
 });
 
-test("Pages HTML supports project and custom-domain base paths", async () => {
+test("Pages HTML supports nested and custom-domain base paths", async () => {
   const index = await readFile("dist/index.html", "utf8");
   const resume = await readFile("dist/resume/index.html", "utf8");
   for (const html of [index, resume]) {
     assert.match(html, /solitaire-build-[a-f0-9]{24}/);
-    assert.match(html, /https:\/\/venkatarangan\.github\.io\/mangoidiots-solitaire\//);
+    assert.match(html, /<link rel="canonical" href="https:\/\/solitaire\.mangoidiots\.com\/">/);
+    assert.match(html, /<meta property="og:url" content="https:\/\/solitaire\.mangoidiots\.com\/">/);
+    assert.match(html, /<meta property="og:image" content="https:\/\/solitaire\.mangoidiots\.com\/social-preview\.png">/);
+    assert.match(html, /<meta name="twitter:card" content="summary_large_image">/);
+    assert.doesNotMatch(html, /venkatarangan\.github\.io/);
     assert.doesNotMatch(html, /__SOLITAIRE_BASE__/);
   }
   assert.match(index, /<base href="\.\/">/);
@@ -48,6 +54,12 @@ test("Pages HTML supports project and custom-domain base paths", async () => {
 });
 
 test("manifest, theme catalog and worker are static-host compatible", async () => {
+  assert.equal((await readFile("dist/CNAME", "utf8")).trim(), "solitaire.mangoidiots.com");
+  const preview = await readFile("dist/social-preview.png");
+  assert.equal(preview.subarray(1, 4).toString(), "PNG");
+  assert.ok(preview.length > 50_000);
+  assert.equal(preview.readUInt32BE(16), 1200);
+  assert.equal(preview.readUInt32BE(20), 630);
   const manifest = JSON.parse(await readFile("dist/manifest.webmanifest", "utf8"));
   assert.equal(manifest.start_url, "./");
   assert.equal(manifest.scope, "./");

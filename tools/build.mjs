@@ -213,7 +213,7 @@ await writeFile(path.join(stage, "resume", "index.html"), html.replace('<base hr
 await writeFile(path.join(stage, ".nojekyll"), "");
 
 const core = (await collect(stage))
-  .filter((file) => !file.path.endsWith(".zip") && file.path !== ".nojekyll")
+  .filter((file) => !file.path.endsWith(".zip") && file.path !== ".nojekyll" && file.path !== "CNAME")
   .map((file) => {
     const contentType = types[path.extname(file.path)];
     if (!contentType) throw new Error(`No explicit MIME for static asset: ${file.path}`);

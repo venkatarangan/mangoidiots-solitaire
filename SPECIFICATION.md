@@ -8,8 +8,7 @@ with original Indian-history-inspired visual and musical themes.
 
 - **Current application version:** 1.2.0
 - **Hosting:** GitHub Pages
-- **Temporary URL:** <https://venkatarangan.github.io/mangoidiots-solitaire/>
-- **Planned URL:** <https://solitaire.mangoidiots.com/>
+- **Production URL:** <https://solitaire.mangoidiots.com/>
 
 The game is independent work. It does not copy Microsoft's artwork, sounds,
 branding, source code, or proprietary deal collection.
@@ -100,9 +99,11 @@ branding, source code, or proprietary deal collection.
 - The repository is the deployment source of truth.
 - A GitHub Actions workflow builds and deploys every accepted change on `main`.
 - Generated output is uploaded as a Pages artifact rather than committed.
-- URLs are relative so one artifact supports:
-  - `/mangoidiots-solitaire/` on the default GitHub Pages domain.
-  - `/` on `solitaire.mangoidiots.com`.
+- Application URLs are relative so the artifact is served from `/` on
+  `solitaire.mangoidiots.com`.
+- Canonical and social-sharing metadata use the production URL.
+- A 1200 × 630 Open Graph image is published for link previews.
+- `CNAME` binds the Pages deployment to `solitaire.mangoidiots.com`.
 - `resume/index.html` provides a static resume route.
 - `.nojekyll` prevents Jekyll processing.
 - The service worker remains inside and controls only the game deployment scope.
