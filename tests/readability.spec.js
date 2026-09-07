@@ -4,12 +4,14 @@ import { unzipSync } from "fflate";
 import { loaded, start, readSave, stockClick, fixture, layout, root, storageKey } from "./helpers.js";
 
 async function chooseTheme(page, id) {
+  // Hosted runners rasterize both Retina card sets without a hardware GPU.
+  const timeout = process.env.CI ? 90000 : 40000;
   const previousCanvas = await page.locator("#board canvas").elementHandle();
   await page.locator("#themes").click();
   await page.getByLabel("Available theme packs").selectOption(`${id}@1.1.0`);
   await page.getByRole("button", { name: "Use theme", exact: true }).click();
-  await expect.poll(() => previousCanvas.evaluate((canvas) => canvas.isConnected), { timeout: 40000 }).toBe(false);
-  await expect(page.locator("#loading")).toBeHidden({ timeout: 40000 });
+  await expect.poll(() => previousCanvas.evaluate((canvas) => canvas.isConnected), { timeout }).toBe(false);
+  await expect(page.locator("#loading")).toBeHidden({ timeout });
   await expect(page.locator("#theme-label")).toHaveText(id === "chola" ? "Chola Royal Court" : "Mughal Gardens");
 }
 
@@ -58,6 +60,7 @@ const views = [
 ];
 for (const view of views) {
   test.describe(`${view.width}x${view.height} DPR${view.dpr}`, () => {
+    if (process.env.CI) test.describe.configure({ timeout: 180000 });
     test.use({ viewport: view, deviceScaleFactor: view.dpr, reducedMotion: "reduce" });
     for (const theme of ["chola", "mughal"]) {
       test(`${view.height <= 390 ? "landscape screen fit" : "readable cards"} ${theme}`, async ({ page }, testInfo) => {
