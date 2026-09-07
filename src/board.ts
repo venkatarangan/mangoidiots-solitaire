@@ -16,6 +16,7 @@ interface BoardOptions {
   enabled: () => boolean;
   zoom: () => number;
   background: () => string;
+  useThemeBackground: () => boolean;
   card: (pile: string, index: number) => void;
   destination: (pile: string) => void;
   stock: () => void;
@@ -213,7 +214,7 @@ export class RoyalBoard extends Phaser.Scene {
     const ink = tableInk(this.options.background());
     const slotColour = ink === "#000000" ? 0x182d34 : 0xd9c18c;
     const background = this.add.image(this.width / 2, height / 2, "table").setDisplaySize(this.width, height)
-      .setAlpha(this.options.background() === this.options.theme.manifest.palette.table ? .21 : 0);
+      .setAlpha(this.options.useThemeBackground() ? .21 : 0);
     this.objects.push(background);
     const slot = (pile: string, x: number, y: number, label: string) => {
       const frame = this.add.graphics();

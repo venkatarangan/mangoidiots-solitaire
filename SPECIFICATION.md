@@ -6,7 +6,7 @@ Mangoidiots Solitaire is a colourful, offline-first Draw 1 Klondike game for
 phones, tablets, and desktop browsers. It combines familiar solitaire rules
 with original Indian-history-inspired visual and musical themes.
 
-- **Application version:** 1.3.0
+- **Application version:** 1.3.1
 - **Previous working release:** 1.2.0, commit `f0ef819`
 - **Hosting:** GitHub Pages
 - **Production URL:** <https://solitaire.mangoidiots.com/>
@@ -96,8 +96,12 @@ branding, source code, or proprietary deal collection.
   Fit includes the complete landscape table; portrait can still scroll long runs.
 - Scroll mode uses one-finger swipes over cards without moving them. Turning it
   off restores card drag/tap interactions. Selected cards survive scrolling.
-- Zoom and a preset/custom table colour persist locally, including across theme
-  changes. A theme-background reset and contrasting pile labels are provided.
+- Zoom and a preset/custom colour persist locally, including across theme
+  changes. The chosen colour covers the entire app and playing area without
+  decorative overlays, with contrasting text, controls and pile labels.
+  A theme-background reset restores the theme's original appearance.
+- The menu shows the Mangoidiots logo and groups game actions, appearance/sound,
+  and help/information. About links to the public GitHub repository.
 - Secondary information and the keyboard list remain accessible from the menu.
 - Back stacks may overlap tightly, but every exposed card's identifying strip
   remains visible. Hidden identities remain concealed.

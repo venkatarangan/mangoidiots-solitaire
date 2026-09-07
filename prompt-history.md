@@ -143,3 +143,10 @@ with Fit retained as an optional overview.
 
 Publication was requested after the local preview of the readability, scrolling,
 zoom, background-colour, and victory-fireworks improvements.
+
+## Whole-app colour and clearer menu
+
+> Make the selected colour apply to the entire page/app background as well as
+> the playing area. Show the Mangoidiots logo in the hamburger menu and arrange
+> its options logically from the player's perspective. Include the GitHub
+> repository link in About. Make these corrections and publish.

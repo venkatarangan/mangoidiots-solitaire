@@ -207,18 +207,33 @@ test("a background timer save cannot reject a legal drop or overwrite its new bo
   expect((await readSave(page)).board.foundations[0]).toEqual([0]);
 });
 
-test("Mangoidiots branding, exact attribution, supplied logo only in About/Help, and both theme choices", async ({ page }, testInfo) => {
+test("Mangoidiots branding, logo in organized menu and About/Help, repository link, and both theme choices", async ({ page }, testInfo) => {
   await start(page);
   await expect(page).toHaveTitle("Mangoidiots Solitaire");
   await expect(page.locator("footer")).toHaveText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
   await expect(page.locator("footer a")).toHaveAttribute("href", "https://solitaire.mangoidiots.com/");
   expect(await page.locator(".app-shell img").count()).toBe(0);
   await page.locator("#menu").click();
+  await expect(page.getByAltText("MangoIdiots.com", { exact: true })).toBeVisible();
+  expect(await page.locator(".menu-section h3").allTextContents()).toEqual(["Your game", "Appearance & sound", "Help & information"]);
+  for (const [group, buttons] of [
+    ["Your game", ["Return to game", "New game", "Restart this deal", "Game history"]],
+    ["Appearance & sound", ["Theme collection", "Table appearance", "Sound & effects"]],
+    ["Help & information", ["How to play", "Card list & keyboard play", "About Mangoidiots Solitaire"]],
+  ]) {
+    expect(await page.getByRole("region", { name: group, exact: true }).getByRole("button").allTextContents()).toEqual(buttons);
+  }
+  await page.getByRole("button", { name: "Return to game", exact: true }).click();
+  await expect(page.locator("#dialog")).not.toBeVisible();
+  await page.locator("#menu").click();
   await page.getByRole("button", { name: "About Mangoidiots Solitaire", exact: true }).click();
   await expect(page.locator("#dialog-body")).toContainText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
-  for (const text of ["Version 1.3.0", "75%-200%", "scrollable mobile tables", "background colour", "fireworks", "GitHub Pages"]) {
+  for (const text of ["Version 1.3.1", "75%-200%", "scrollable mobile tables", "background colour", "fireworks", "GitHub Pages"]) {
     await expect(page.locator("#dialog-body")).toContainText(text);
   }
+  const repository = page.getByRole("link", { name: "GitHub", exact: true });
+  await expect(repository).toHaveAttribute("href", "https://github.com/venkatarangan/mangoidiots-solitaire");
+  await expect(repository).toHaveAttribute("rel", "noopener noreferrer");
   const image = page.getByAltText("MangoIdiots.com", { exact: true });
   await expect(image).toBeVisible();
   expect(await image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);

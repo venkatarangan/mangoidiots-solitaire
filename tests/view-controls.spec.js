@@ -108,32 +108,65 @@ test("native card controls do not click through to the clipped portion of a tall
 });
 
 test("zoom and custom background persist offline and survive a theme change", async ({ page, context }) => {
+  const appColour = async (colour, ink) => {
+    for (const selector of ["html", "body", "#board-viewport", "#pause-overlay"]) {
+      await expect(page.locator(selector)).toHaveCSS("background-color", colour);
+    }
+    await expect(page.locator("body")).toHaveCSS("background-image", "none");
+    for (const selector of [".brand", ".metric-label", "#theme-label", "#zoom-level", "#menu", "#pause", "footer"]) {
+      await expect(page.locator(selector).first()).toHaveCSS("color", ink);
+    }
+  };
   await start(page);
   const before = await readSave(page);
   await page.locator("#zoom-in").click();
   await expect(page.locator("#zoom-level")).toHaveText("125%");
   await page.locator("#table-settings").click();
+  await page.getByRole("button", { name: "Forest", exact: true }).click();
+  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await appColour("rgb(16, 62, 56)", "rgb(255, 255, 255)");
+  const box = await page.locator("#board canvas").boundingBox();
+  const screenshot = (await page.screenshot()).toString("base64");
+  const pixels = await page.evaluate(async ({ screenshot, x, y }) => {
+    const image = new Image();
+    image.src = `data:image/png;base64,${screenshot}`;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = image.width; canvas.height = image.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0);
+    return [[0, 0], [x, y]].map(([x, y]) => Array.from(ctx.getImageData(x, y, 1, 1).data));
+  }, { screenshot, x: Math.ceil(box.x + 1), y: Math.ceil(box.y + 1) });
+  expect(pixels).toEqual([[16, 62, 56, 255], [16, 62, 56, 255]]);
+  await page.locator("#table-settings").click();
   await page.getByRole("button", { name: "Ivory", exact: true }).click();
-  await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(245, 237, 219)");
+  await appColour("rgb(245, 237, 219)", "rgb(0, 0, 0)");
   await page.getByLabel("Custom background colour").fill("#b0c4de");
   await page.getByLabel("Custom background colour").dispatchEvent("change");
   await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(176, 196, 222)");
   await page.getByRole("button", { name: "Done", exact: true }).click();
+  await page.locator("#pan-table").click();
+  await expect(page.locator("#pan-table")).toHaveCSS("color", "rgb(176, 196, 222)");
+  await expect(page.locator("#pan-table")).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await page.locator("#pan-table").click();
   await page.locator("#themes").click();
   await page.getByLabel("Available theme packs").selectOption("mughal@1.1.0");
   await page.getByRole("button", { name: "Use theme", exact: true }).click();
   await expect(page.locator("#theme-label")).toHaveText("Mughal Gardens", { timeout: 40000 });
   await expect(page.locator("#loading")).toBeHidden();
-  await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(176, 196, 222)");
+  await appColour("rgb(176, 196, 222)", "rgb(0, 0, 0)");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#b0c4de");
   await page.locator("#pause").click();
   await context.setOffline(true);
   await loaded(page);
   await expect(page.locator("#zoom-level")).toHaveText("125%");
-  await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(176, 196, 222)");
+  await appColour("rgb(176, 196, 222)", "rgb(0, 0, 0)");
   expect((await readSave(page)).board).toEqual(before.board);
   await page.locator("#table-settings").click();
   await page.getByRole("button", { name: "Use theme background", exact: true }).click();
   await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(23, 59, 83)");
+  await expect(page.locator("html")).not.toHaveClass(/custom-background/);
+  expect(await page.locator("body").evaluate((body) => getComputedStyle(body).backgroundImage)).toContain("radial-gradient");
 });
 
 test("older preferences gain safe display defaults and zoom controls respect their limits", async ({ page }) => {

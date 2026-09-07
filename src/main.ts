@@ -346,19 +346,36 @@ async function resetDialog(): Promise<void> {
 async function menuDialog(): Promise<void> {
   await openDialog("Mangoidiots Solitaire");
   if (!dialog.open) return;
-  const grid = control("div", undefined, "menu-grid");
+  const logo = brandLogo();
+  logo.classList.add("menu-logo");
+  body.append(logo);
   const change = (action: () => Promise<void>) => async () => { closeDialog(); await action(); };
-  grid.append(button("New game", change(newGameDialog)), button("Restart this deal", change(resetDialog)),
-    button("Game history", change(historyDialog)), button("Sound & effects", change(settingsDialog)),
-    button("Theme collection", change(themesDialog)), button("Table appearance", change(tableSettingsDialog)), button("How to play", change(helpDialog)),
-    button("About Mangoidiots Solitaire", change(aboutDialog)),
-    button("Card list & keyboard play", () => {
-      closeDialog();
-      const panel = element<HTMLDetailsElement>("accessible-panel");
-      panel.open = true; keyboardDialog.append(panel); keyboardDialog.showModal();
-      element("keyboard-close").focus();
-    }));
-  body.append(grid, control("p", "Your game stays on this browser and device. Clearing site data can remove saved games and downloaded themes.", "fine-print"));
+  for (const [title, actions] of [
+    ["Your game", [
+      button("Return to game", () => closeDialog()), button("New game", change(newGameDialog)),
+      button("Restart this deal", change(resetDialog)), button("Game history", change(historyDialog)),
+    ]],
+    ["Appearance & sound", [
+      button("Theme collection", change(themesDialog)), button("Table appearance", change(tableSettingsDialog)),
+      button("Sound & effects", change(settingsDialog)),
+    ]],
+    ["Help & information", [
+      button("How to play", change(helpDialog)), button("Card list & keyboard play", () => {
+        closeDialog();
+        const panel = element<HTMLDetailsElement>("accessible-panel");
+        panel.open = true; keyboardDialog.append(panel); keyboardDialog.showModal();
+        element("keyboard-close").focus();
+      }), button("About Mangoidiots Solitaire", change(aboutDialog)),
+    ]],
+  ] as const) {
+    const section = control("section", undefined, "menu-section");
+    section.setAttribute("aria-label", title);
+    const grid = control("div", undefined, "menu-grid");
+    grid.append(...actions);
+    section.append(control("h3", title), grid);
+    body.append(section);
+  }
+  body.append(control("p", "Your game stays on this browser and device. Clearing site data can remove saved games and downloaded themes.", "fine-print"));
   body.append(control("p", `${current.difficulty} \u00b7 ${current.dealId} \u00b7 ${theme.manifest.name} \u00b7 ${element("offline-status").textContent}`, "fine-print"));
 }
 async function setZoom(zoom: number): Promise<void> {
@@ -397,7 +414,7 @@ async function setBackground(colour: string | null): Promise<void> {
 async function tableSettingsDialog(): Promise<void> {
   await openDialog("Table appearance");
   if (!dialog.open) return;
-  body.append(control("p", "Choose the playing-surface colour. Your choice stays with you when switching themes; the controls keep their readable theme colours."));
+  body.append(control("p", "Choose one background colour for the entire app and playing area. Text and controls adapt to stay readable. Your choice stays with you when switching themes."));
   const palette = control("div", undefined, "colour-swatches");
   const row = control("label", undefined, "settings-row"), input = control("input");
   input.type = "color"; input.value = preferences.background ?? theme.manifest.palette.table;
@@ -490,7 +507,7 @@ async function helpDialog(): Promise<void> {
     "Complete all four foundations from Ace to King to win. Finish game appears when the remaining legal sequence can be completed automatically. Manual wins and Auto-finish both show a five-second fireworks celebration and your score; View table / skip closes it.",
   ].forEach((text) => rules.append(control("li", text)));
   body.append(rules, control("h3", "Your table, sound and accessibility"));
-  body.append(control("p", "Colour opens presets and a custom background picker. Your colour and zoom are saved locally and survive theme changes. Use theme background restores the active theme's colour. Pile labels adapt to light and dark surfaces."));
+  body.append(control("p", "Colour opens presets and a custom background picker for the entire app and playing area. Your colour and zoom are saved locally and survive theme changes. Use theme background restores the active theme's appearance. Text, controls and pile labels adapt to light and dark backgrounds."));
   body.append(control("p", "Menu > Sound & effects has music and card-sound volumes, Mute everything, and Reduce visual effects. Reduced effects replace fireworks with a static celebration. Reopening a completed game does not replay fireworks or award another bonus."));
   body.append(control("p", "For keyboard play, open Card list & keyboard play and use Tab and Enter. H requests a hint, P pauses or resumes, Ctrl+Z / Cmd+Z undoes, and Escape cancels a selection or closes a dialog."));
   body.append(control("h3", "Pause, restart and history"));
@@ -511,12 +528,17 @@ async function aboutDialog(): Promise<void> {
   await openDialog("About Mangoidiots Solitaire");
   if (!dialog.open) return;
   body.append(brandLogo(), control("p", "Draw 1 Klondike, with original art and instrumental music inspired by India's historical courts. Choose Chola or Mughal Gardens in the Theme collection."));
-  body.append(control("p", "Version 1.3.0 brings sharper cards and pile labels, scrollable mobile tables, saved 75%-200% card zoom with a Fit overview, and your choice of background colour. Wins celebrate with visible fireworks; reduced effects offer a quieter static celebration."));
+  body.append(control("p", "Version 1.3.1 includes sharper cards and pile labels, scrollable mobile tables, saved 75%-200% card zoom with a Fit overview, and one background colour across the app and playing area. Wins celebrate with visible fireworks; reduced effects offer a quieter static celebration."));
   body.append(control("p", "Play Easy, Medium, or Difficult deals with hints, Undo, a timer, and automatic finishing when available. Pause and resume your game, and revisit the latest 500 attempts in Game history."));
   const attribution = control("p", "Generated with OpenAI GPT-6 Astra. Play for free at ");
   const link = control("a", "solitaire.mangoidiots.com");
   link.href = "https://solitaire.mangoidiots.com/";
   attribution.append(link, document.createTextNode(".")); body.append(attribution);
+  const source = control("p", "View the source code on ");
+  const repository = control("a", "GitHub");
+  repository.href = "https://github.com/venkatarangan/mangoidiots-solitaire";
+  repository.target = "_blank"; repository.rel = "noopener noreferrer";
+  source.append(repository, document.createTextNode(".")); body.append(source);
   body.append(control("p", "Free to play on GitHub Pages, with no account, analytics, advertising, or progress uploads. After the first complete download, your game and downloaded themes work offline. Progress, zoom, colour and other preferences stay in this browser; cloud sync is not included.", "fine-print"));
   body.append(control("p", "An independent game, not affiliated with Microsoft. Artwork and synthesized music are creative interpretations, not historical portraits or recordings.", "fine-print"));
 }
@@ -594,6 +616,7 @@ function boardOptions(loaded: LoadedTheme): Parameters<typeof createBoard>[1] {
   return {
     theme: loaded, enabled: () => allowed() && !keyboardDialog.open && !panning,
     zoom: () => preferences.zoom, background: () => preferences.background ?? loaded.manifest.palette.table,
+    useThemeBackground: () => preferences.background === null,
     card: selectCard, destination: (pile) => { void destination(pile); },
     stock: () => { void drawCard(); }, inspect: (column) => { void inspectColumn(column); },
     drop: (from, index, to) => { void perform({ type: "move", from, index, to }); },
@@ -721,10 +744,13 @@ async function initialize(): Promise<void> {
   }
 }
 function applyThemeAppearance(): void {
-  document.documentElement.style.setProperty("--table", theme.manifest.palette.table);
+  const colour = preferences.background ?? theme.manifest.palette.table;
+  document.documentElement.classList.toggle("custom-background", preferences.background !== null);
+  document.documentElement.style.setProperty("--table", colour);
+  document.documentElement.style.setProperty("--page-ink", tableInk(colour));
   document.documentElement.style.setProperty("--gold", theme.manifest.palette.accent);
-  document.documentElement.style.setProperty("--board-colour", preferences.background ?? theme.manifest.palette.table);
-  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = theme.manifest.palette.table;
+  document.documentElement.style.setProperty("--board-colour", colour);
+  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = colour;
 }
 function action(id: string, callback: () => void | Promise<void>): void {
   element(id).addEventListener("click", () => {

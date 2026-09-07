@@ -12,6 +12,17 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; min-width: 320px; background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--table), white 15%) 0%, var(--table) 48%, color-mix(in srgb, var(--table), black 32%) 100%); }
+:root.custom-background { color: var(--page-ink); }
+.custom-background body, .custom-background .overlay, .custom-background .loading-screen { background: var(--table); }
+.custom-background .app-shell :is(.brand, .brand-mark, .metric-label, .metrics strong, .icon-button, .game-caption, #difficulty, .caption-dot, #theme-label, .theme-button, .view-controls button, #zoom-level, .pause-card h1, .pause-card p, .eyebrow, #message, .toolbar button, .toolbar button span, .accessible-board, .pile-list h3, .pile-list button, footer),
+.custom-background .loading-screen :is(h1, p, .loading-emblem, #retry-load) { color: var(--page-ink); }
+.custom-background .app-shell :is(.icon-button, .theme-button, .view-controls button, .toolbar button) {
+  background: transparent; border-color: color-mix(in srgb, var(--page-ink) 45%, transparent);
+}
+.custom-background .app-shell :is(#pan-table[aria-pressed=true], #zoom-fit[aria-pressed=true], #finish) {
+  background: var(--page-ink); color: var(--table);
+}
+.custom-background .app-shell :is(button, a):focus-visible { outline-color: var(--page-ink); }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 button:disabled { opacity: .38; cursor: default; }

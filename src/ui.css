@@ -36,4 +36,7 @@ th { font-size:10px;color:#6b7557; }
 .help-rules { padding-left:21px; }
 .help-rules li { padding-bottom:7px; }
 .about-logo { display:block;width:min(320px,100%);height:auto;margin:4px auto 24px; }
+.menu-logo { width:min(180px,100%);margin:0 auto 16px; }
+.menu-section { margin:0 0 20px; }
+.menu-section h3 { margin:0 0 8px;font-size:16px; }
 #dialog-body a { color:#315d89;text-underline-offset:3px; }

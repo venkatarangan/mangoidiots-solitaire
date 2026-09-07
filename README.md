@@ -8,7 +8,14 @@ remote progress tracking.
 
 Play at <https://solitaire.mangoidiots.com/>.
 
-## What's new in 1.3.0
+## What's new in 1.3.1
+
+**Colour** now applies one background across the entire app and playing area,
+with contrasting text and controls. The menu includes the Mangoidiots logo and
+groups actions into **Your game**, **Appearance & sound**, and **Help &
+information**. About includes a link to this GitHub repository.
+
+### Readability improvements introduced in 1.3.0
 
 Both historical themes now have clearer card numbers and suits, sharper pile
 labels, and high-density rendering. Mobile landscape play keeps long columns
@@ -82,10 +89,11 @@ cards, then turn it off to move cards. A selected card stays selected while
 scrolling, so tap-to-move also works between distant piles. Mouse wheels,
 trackpads, scrollbars, and keyboard scrolling remain available.
 
-**Colour** opens table appearance: choose a preset or custom background, or
+**Colour** opens appearance settings: choose a preset or custom background, or
 restore the current theme's colour. The choice persists across reloads and theme
-switches. Pile labels adapt to light/dark backgrounds while the controls retain
-their theme colours. Wins show fireworks inside the visible results panel;
+switches. The entire app and playing area share your chosen colour; text,
+controls and pile labels adapt to light/dark backgrounds. Wins show fireworks
+inside the visible results panel;
 reduced-effects mode uses a static celebration, and reopening a completed game
 does not replay the animation or award another bonus.
 
