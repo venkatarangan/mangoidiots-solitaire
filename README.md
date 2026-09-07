@@ -181,6 +181,10 @@ commit reaches `main`. It:
 No generated site files are committed. GitHub Actions always produces the
 deployment from the tracked source and lockfile.
 
+The build and JavaScript action runtimes use Node.js 24, including the Pages
+artifact uploader's nested action. The upload includes hidden files from `dist`
+to preserve `.nojekyll`; it never uploads the repository working directory.
+
 ### Custom domain
 
 The production address is <https://solitaire.mangoidiots.com/>. GitHub Pages

@@ -22,10 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -46,13 +46,14 @@ jobs:
         run: npx playwright test tests/gameplay.spec.js tests/experience.spec.js tests/readability.spec.js tests/view-controls.spec.js --grep "route types|branding|nested Pages path and resume route|landscape screen fit|cached theme upgrade|landscape keeps|zoom and custom|completion displays"
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          include-hidden-files: true
 
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

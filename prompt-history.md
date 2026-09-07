@@ -150,3 +150,13 @@ zoom, background-colour, and victory-fireworks improvements.
 > the playing area. Show the Mangoidiots logo in the hamburger menu and arrange
 > its options logically from the player's perspective. Include the GitHub
 > repository link in About. Make these corrections and publish.
+
+## GitHub Actions runtime maintenance
+
+> Review the failed deployment's exit-code error and Node.js 20 deprecation
+> warning. Fix all affected workflow actions and publish a new deployment.
+
+The older theme-loading timeout had already been corrected in a subsequent
+successful deployment. This maintenance updates the action runtimes to Node.js
+24, including the nested artifact uploader, while preserving the game and all
+existing deployment tests.
