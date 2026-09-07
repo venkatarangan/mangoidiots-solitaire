@@ -6,7 +6,8 @@ summaries, and implementation-only coordination messages are intentionally
 excluded. Only prompts relevant to the current GitHub Pages product and
 deployment are retained.
 
-Spelling and phrasing are otherwise preserved, apart from Markdown formatting.
+Prompts are excerpted and lightly edited for readability, privacy, and the
+current deployment. This is product history, not a verbatim conversation export.
 
 ## Initial product prompt
 
@@ -109,3 +110,36 @@ Spelling and phrasing are otherwise preserved, apart from Markdown formatting.
 >
 > 2. Create and publish a social Open Graph preview image so that sharing
 > https://solitaire.mangoidiots.com/ on Facebook or WhatsApp shows a preview.
+
+## Readable cards and a screen-sized landscape table
+
+> Fantastic, remember this version which is working. Let us improve it.
+>
+> In PC, the text on top of the individual cards is not clear; make it legible.
+> On the phone the actual number and design of a card is not readable in
+> portrait. In phone landscape the cards and playing surface should be fully
+> visible in the first scroll.
+
+Confirmed choices: prioritize the full table and essential landscape controls;
+retain royal artwork with larger ranks and suits; allow stock, waste, and
+foundations in a compact landscape side area. Review the improved visuals
+locally before publishing a replacement for the working release.
+
+## Victory, scrolling, zoom and background colour
+
+> 1. After a successful win or completion, an animation and fireworks should be played.
+> 2. Allow scrolling through the viewport, especially in landscape mode; card numbers are difficult to read on mobile.
+> 3. Allow zoom in and zoom out, especially for easier reading on mobiles.
+> 4. Allow users to change the background colour.
+
+This revises the earlier landscape preference: readable scrolling is the default,
+with Fit retained as an optional overview.
+
+## Documentation, privacy and publication
+
+> Update the README, About the game, playing instructions, and prompt Markdown
+> to reflect the changes made now. Publish the changes to GitHub, and ensure
+> no personally identifiable information is included in the publication.
+
+Publication was requested after the local preview of the readability, scrolling,
+zoom, background-colour, and victory-fireworks improvements.

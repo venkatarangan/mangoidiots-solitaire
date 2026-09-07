@@ -1,5 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
+const browserName = process.env.TEST_BROWSER || "chromium";
 export default defineConfig({
   testDir: "./tests",
   testMatch: "**/*.spec.js",
@@ -9,7 +10,8 @@ export default defineConfig({
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:4173/mangoidiots-solitaire/",
-    channel: "chrome",
+    browserName,
+    channel: browserName === "chromium" ? "chrome" : undefined,
     trace: "retain-on-failure",
   },
   webServer: {

@@ -11,7 +11,7 @@
     <rect x="1" y="1" width="238" height="334" rx="10" fill="url(#paper)" stroke="#b8a57a" stroke-width="2"/>
     <rect x="6" y="6" width="228" height="324" rx="7" fill="none" stroke="#d0bc88" stroke-width=".7"/>
     <path d="M49 12H191M49 324H191" fill="none" stroke="#b6a579" stroke-width="0.8" />
-    <rect x="48" y="46" width="144" height="245" rx="3" fill="#e8e4d3" stroke="#c1a160" stroke-width="1"/>
+    <g id="card-art"><rect x="48" y="46" width="144" height="245" rx="3" fill="#e8e4d3" stroke="#c1a160" stroke-width="1"/>
     <path d="M57 280V111Q52 101 62 96Q56 83 70 79Q69 65 87 66Q89 53 103 59Q112 52 120 45Q128 52 137 59Q151 53 153 66Q171 65 170 79Q184 83 178 96Q188 101 183 111V280Z" fill="url(#garden)" stroke="url(#gold)" stroke-width="2"/>
     <g opacity=".47"><g transform="translate(155 186) scale(0.45)" fill="#ede4c7">
     <path d="M-42 0V-9H-35V-43H-42V-49H42V-43H35V-9H42V0Z"/>
@@ -116,5 +116,10 @@
       <path d="M162 166Q168 171 162 184L154 194L157 179Z" fill="#d4b789" /><circle cx="172" cy="157" r="1.2" fill="#122d32" />
       <path d="M166 187L165 193M170 187L169 193" fill="none" stroke="#c49c59" stroke-width="1.2" />
     <rect x="52" y="291" width="136" height="16" fill="#f1ead6" stroke="#c7af77" stroke-width=".65"/>
-    <text x="120" y="302" text-anchor="middle" fill="#675239" font-family="Georgia,serif" font-size="8.1" font-weight="bold" letter-spacing=".65">ROYAL FALCONER</text><text x="28" y="39" text-anchor="middle" fill="#172d51" font-family="Georgia,serif" font-size="37" font-weight="bold">J</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#172d51" /></g><g transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#172d51" font-family="Georgia,serif" font-size="37" font-weight="bold">J</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#172d51" /></g></g>
+    <text x="120" y="302" text-anchor="middle" fill="#675239" font-family="Georgia,serif" font-size="8.1" font-weight="bold" letter-spacing=".65">ROYAL FALCONER</text></g>
+    <g id="primary-index">
+      <text id="index-rank" x="34" y="52" text-anchor="middle" fill="#172d51" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="48">J</text>
+      <g id="index-suit"><g transform="translate(34 75) rotate(0) scale(0.7619047619047619)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#172d51" /></g></g>
+    </g>
+    <g id="secondary-index" transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#172d51" font-family="Arial,Helvetica,sans-serif" font-size="37" font-weight="700">J</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#172d51" /></g></g>
   </svg>

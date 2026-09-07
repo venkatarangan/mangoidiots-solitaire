@@ -1,4 +1,4 @@
-import { suitShape } from "../art.mjs";
+import { cardIndex, suitShape } from "../art.mjs";
 
 const GOLD = "#b38a38";
 const INK = "#172d51";
@@ -233,12 +233,12 @@ const PIPS = {
   10: [[81,75],[159,75],[120,104],[81,137],[159,137],[81,199],[159,199],[120,232],[81,261],[159,261]],
 };
 
-export function cardSvg(card) {
+export function cardSvg(card, compact = false) {
   const suit = Math.floor(card / 13);
   const rank = card % 13 + 1;
   const s = SUITS[suit];
   const label = ({ 1: "A", 11: "J", 12: "Q", 13: "K" })[rank] ?? String(rank);
-  const index = `<text x="28" y="39" text-anchor="middle" fill="${s.ink}" font-family="Georgia,serif" font-size="${rank === 10 ? 30 : 37}" font-weight="bold">${label}</text>${suitShape(suit, 28, 57, 24, s.ink)}`;
+  const secondaryIndex = `<text x="28" y="39" text-anchor="middle" fill="${s.ink}" font-family="Arial,Helvetica,sans-serif" font-size="${rank === 10 ? 30 : 37}" font-weight="700">${label}</text>${suitShape(suit, 28, 57, 24, s.ink)}`;
   const center = rank >= 11 ? court(suit, rank) : rank === 1
     ? `${star(120, 165, 78, "#e4eee5")}${star(120, 165, 65, "#f8f1db", "#c2aa70")}
        ${circle(120, 165, 39, "#fffaf0", 'stroke="#b89b58" stroke-width="1.2"')}
@@ -252,8 +252,10 @@ export function cardSvg(card) {
     <title>${label} of ${s.name}</title>${defs(s)}
     <rect x="1" y="1" width="238" height="334" rx="10" fill="url(#paper)" stroke="#b8a57a" stroke-width="2"/>
     <rect x="6" y="6" width="228" height="324" rx="7" fill="none" stroke="#d0bc88" stroke-width=".7"/>
-    ${line("M49 12H191M49 324H191", "#b6a579", .8)}
-    ${center}${index}<g transform="rotate(180 120 168)">${index}</g>
+    ${compact ? line("M12 85H228", "#b8a57a", 1) : line("M49 12H191M49 324H191", "#b6a579", .8)}
+    <g id="card-art"${compact ? ' transform="translate(0 54) scale(1 .86)"' : ""}>${center}</g>
+    ${cardIndex(suit, rank, s.ink, compact)}
+    ${compact ? "" : `<g id="secondary-index" transform="rotate(180 120 168)">${secondaryIndex}</g>`}
   </svg>`;
 }
 

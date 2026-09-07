@@ -22,18 +22,20 @@ export async function readSave(page) {
 }
 export async function layout(page) {
   const box = await page.locator("#board canvas").boundingBox();
-  const gap = box.width < 500 ? 5 : 14;
-  const width = Math.min(126, (box.width - gap * 6 - 8) / 7);
-  const left = (box.width - (width * 7 + gap * 6)) / 2;
+  const geometry = JSON.parse(await page.locator("#board canvas").getAttribute("data-layout"));
+  const piles = Object.fromEntries(Object.entries(geometry.piles).map(([id, rect]) => [id,
+    { ...rect, x: box.x + rect.x, y: box.y + rect.y }]));
+  const width = geometry.cardWidth;
   return {
-    box, width, height: width * 1.4, x: (column) => box.x + left + column * (width + gap),
-    top: box.y + 12, tableau: box.y + width * 1.4 + (box.width < 600 ? 68 : 62),
-    faceStep: Math.max(11, Math.min(32, width * .27)), backStep: Math.max(7, Math.min(12, width * .11)),
+    box, width, height: geometry.cardHeight, piles, geometry,
+    x: (column) => piles[`t${column}`].x,
+    top: piles.stock.y, tableau: piles.t0.y,
+    faceStep: geometry.faceStep, backStep: geometry.columns[0].backStep,
   };
 }
 export async function stockClick(page) {
   const l = await layout(page);
-  await page.mouse.click(l.x(0) + l.width / 2, l.top + l.height / 2);
+  await page.mouse.click(l.piles.stock.x + l.width / 2, l.piles.stock.y + l.height / 2);
 }
 export async function fixture(page, change, value) {
   await page.goto("/__test__/blank");

@@ -9,7 +9,8 @@
   </defs>
     <rect x="1" y="1" width="238" height="334" rx="15" fill="url(#paper)" stroke="#c5a96a" stroke-width="2"/>
     <rect x="7" y="7" width="226" height="322" rx="11" fill="none" stroke="#d5bc82" stroke-width=".65"/>
-    <path d="M65 63Q120 45 175 63M65 273Q120 291 175 273" fill="none" stroke="#dbbf7a" stroke-width=".9"/>
+    
+    <g id="card-art"><path d="M65 63Q120 45 175 63M65 273Q120 291 175 273" fill="none" stroke="#dbbf7a" stroke-width=".9"/>
       <g transform="translate(82 86) rotate(0) scale(0.8571428571428571)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g><g transform="translate(158 86) rotate(0) scale(0.8571428571428571)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g><g transform="translate(120 168) rotate(0) scale(0.8571428571428571)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g><g transform="translate(82 250) rotate(180) scale(0.8571428571428571)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g><g transform="translate(158 250) rotate(180) scale(0.8571428571428571)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g>
       <g transform="translate(120 303) scale(0.25)">
     <path d="M0 13C-16 12-24-1-21-13C-10-10-3-4 0 13Z" fill="#caa75c" />
@@ -17,5 +18,10 @@
     <path d="M0 13C-10 4-12-12 0-24C12-12 10 4 0 13Z" fill="#e8d099" />
     <path d="M-25 3Q0 23 25 3Q16 24 0 23Q-16 24-25 3Z" fill="#caa75c" />
     <path d="M-17 27L17 27" fill="none" stroke="#e8d099" stroke-width="2" />
-  </g><text x="28" y="39" text-anchor="middle" fill="#b3233d" font-family="Georgia,serif" font-weight="bold" font-size="37">5</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g><g transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#b3233d" font-family="Georgia,serif" font-weight="bold" font-size="37">5</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g></g>
+  </g></g>
+    <g id="primary-index">
+      <text id="index-rank" x="34" y="52" text-anchor="middle" fill="#b3233d" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="48">5</text>
+      <g id="index-suit"><g transform="translate(34 75) rotate(0) scale(0.7619047619047619)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g></g>
+    </g>
+    <g id="secondary-index" transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#b3233d" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="37">5</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0 18C-5 12-18 3-18-6C-18-18-4-20 0-10C4-20 18-18 18-6C18 3 5 12 0 18Z" fill="#b3233d" /></g></g>
   </svg>

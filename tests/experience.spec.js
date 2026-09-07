@@ -23,7 +23,7 @@ async function mouseDrag(page, from, to, release = true) {
 async function useTheme(page, id) {
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "Theme collection", exact: true }).click();
-  await page.getByLabel("Available theme packs").selectOption(`${id}@1.0.0`);
+  await page.getByLabel("Available theme packs").selectOption(`${id}@1.1.0`);
   const name = await page.getByLabel("Available theme packs").locator("option:checked").textContent();
   await page.getByRole("button", { name: "Use theme", exact: true }).click();
   await expect(page.locator("#theme-label")).toHaveText(name, { timeout: 40000 });
@@ -37,16 +37,23 @@ for (const viewport of [{ width: 320, height: 780 }, { width: 780, height: 420 }
       test(`forgiving drag ${viewport.width}px suit ${suit} rank ${rank}: corners, centre and pointer outside`, async ({ page }) => {
         await page.setViewportSize(viewport); await page.emulateMedia({ reducedMotion: "reduce" });
         await loaded(page); await foundationFixture(page, suit, rank);
+        if ((await layout(page)).geometry.side) {
+          await page.locator("#zoom-fit").click();
+          await expect(page.locator("#zoom-level")).toHaveText("Fit");
+        }
         const before = await readSave(page);
         const anchors = [[.05, .05], [.95, .05], [.5, .5], [.05, .95], [.95, .95]];
         for (let index = 0; index < anchors.length; index++) {
-          // Undo is below the fold in landscape; return to the visible stock row.
           await page.evaluate(() => scrollTo(0, 0));
           const l = await layout(page);
           const [ax, ay] = anchors[index];
-          const from = { x: l.x(1) + l.width * ax, y: l.top + l.height * ay };
+          const from = { x: l.piles.waste.x + l.width * ax, y: l.piles.waste.y + l.height * ay };
           // Bottom and centre grabs leave the pointer outside the foundation.
-          const to = { x: l.x(suit + 3) + l.width * ax, y: l.top + l.height * (.65 + ay) };
+          const target = l.piles[`f${suit}`];
+          // In the side rail use horizontal offset so a low foundation cannot leave the screen.
+          const to = l.geometry.side
+            ? { x: target.x + l.width * (ax + .55), y: target.y + l.height * ay }
+            : { x: target.x + l.width * ax, y: target.y + l.height * (.65 + ay) };
           await mouseDrag(page, from, to, false);
           await expect(page.locator("#message")).toHaveText(`Release to place on the ${["spades", "hearts", "clubs", "diamonds"][suit]} foundation.`);
           await page.mouse.up();
@@ -209,6 +216,9 @@ test("Mangoidiots branding, exact attribution, supplied logo only in About/Help,
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "About Mangoidiots Solitaire", exact: true }).click();
   await expect(page.locator("#dialog-body")).toContainText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
+  for (const text of ["Version 1.3.0", "75%-200%", "scrollable mobile tables", "background colour", "fireworks", "GitHub Pages"]) {
+    await expect(page.locator("#dialog-body")).toContainText(text);
+  }
   const image = page.getByAltText("MangoIdiots.com", { exact: true });
   await expect(image).toBeVisible();
   expect(await image.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
@@ -219,11 +229,14 @@ test("Mangoidiots branding, exact attribution, supplied logo only in About/Help,
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "How to play", exact: true }).click();
   await expect(page.getByAltText("MangoIdiots.com", { exact: true })).toBeVisible();
+  for (const text of ["75% to 200%", "Turn Scroll on", "Long portrait columns can still scroll", "Use theme background", "five-second fireworks", "Reduce visual effects", "Ctrl+Z / Cmd+Z"]) {
+    await expect(page.locator("#dialog-body")).toContainText(text);
+  }
   await page.locator("#dialog-close").click();
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "Theme collection", exact: true }).click();
   await expect(page.getByLabel("Available theme packs").locator("option")).toHaveCount(2);
-  await expect(page.getByLabel("Available theme packs").locator('option[value="mughal@1.0.0"]')).toHaveText("Mughal Gardens");
+  await expect(page.getByLabel("Available theme packs").locator('option[value="mughal@1.1.0"]')).toHaveText("Mughal Gardens");
 });
 
 test("Chola and Mughal switching preserves the board, both packs and logo reopen offline", async ({ page, context }, testInfo) => {
@@ -258,14 +271,14 @@ test("every Mughal SVG and WAV decodes in the browser", async ({ page }) => {
   await loaded(page); await useTheme(page, "mughal");
   const media = await page.evaluate(async () => {
     const base = new URL(document.baseURI);
-    const cache = await caches.open(`mangoidiots-theme:${base.pathname}:mughal:1.0.0`);
-    const metadata = await cache.match(new URL("_theme/mughal/1.0.0/manifest.json", base));
+    const cache = await caches.open(`mangoidiots-theme:${base.pathname}:mughal:1.1.0`);
+    const metadata = await cache.match(new URL("_theme/mughal/1.1.0/manifest.json", base));
     const manifest = await metadata.json();
     const audio = new AudioContext();
     const counts = { images: 0, sounds: 0 };
     try {
       for (const file of manifest.files) {
-        const response = await cache.match(new URL(`_theme/mughal/1.0.0/${file.path}`, base));
+        const response = await cache.match(new URL(`_theme/mughal/1.1.0/${file.path}`, base));
         if (file.mime === "image/svg+xml") {
           const url = URL.createObjectURL(await response.blob());
           try {
@@ -282,5 +295,5 @@ test("every Mughal SVG and WAV decodes in the browser", async ({ page }) => {
     } finally { await audio.close(); }
     return counts;
   });
-  expect(media).toEqual({ images: 54, sounds: 6 });
+  expect(media).toEqual({ images: 106, sounds: 6 });
 });

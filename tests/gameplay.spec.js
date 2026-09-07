@@ -2,7 +2,7 @@ import { test, expect, chromium } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { unzipSync, zipSync } from "fflate";
 
-import { root, loaded, start, readSave, stockClick, fixture } from "./helpers.js";
+import { root, loaded, start, readSave, stockClick, fixture, layout } from "./helpers.js";
 
 test("route types, scope, isolation, and packaged theme delivery", async ({ request }) => {
   const redirect = await request.get(root.slice(0, -1), { maxRedirects: 0 });
@@ -81,15 +81,10 @@ test("dragging a card performs the same legal reveal as tap-to-move", async ({ p
     current.undo=[];return current;
   `);
   await page.locator("#resume").click();
-  const box = await page.locator("#board canvas").boundingBox();
-  const gap = box.width < 500 ? 5 : 14;
-  const width = Math.min(126, (box.width - gap * 6 - 8) / 7);
-  const left = (box.width - (width * 7 + gap * 6)) / 2;
-  const tableau = width * 1.4 + (box.width < 600 ? 68 : 62);
-  const backStep = Math.max(7, Math.min(12, width * .11));
-  await page.mouse.move(box.x + left + width / 2, box.y + tableau + backStep + width * .6);
+  const l = await layout(page);
+  await page.mouse.move(l.x(0) + l.width / 2, l.tableau + l.backStep + l.width * .6);
   await page.mouse.down();
-  await page.mouse.move(box.x + left + width + gap + width / 2, box.y + tableau + width * .6, { steps: 15 });
+  await page.mouse.move(l.x(1) + l.width / 2, l.tableau + l.width * .6, { steps: 15 });
   await page.mouse.up();
   await expect(page.locator("#moves")).toHaveText("1");
   expect((await readSave(page)).board.tableau[0]).toEqual({ cards: [0], faceUp: 0 });
@@ -265,11 +260,11 @@ test("second tab cannot overwrite an active game's save", async ({ page, context
 });
 
 test("interrupted theme download reports failure and retries without clearing storage", async ({ page, context }) => {
-  await context.route("**/themes/chola-1.0.0.zip", (route) => route.fulfill({ status: 503, body: "Unavailable" }));
+  await context.route("**/themes/chola-1.1.0.zip", (route) => route.fulfill({ status: 503, body: "Unavailable" }));
   await page.goto(root);
   await expect(page.locator("#loading-label")).toContainText("Theme download failed", { timeout: 30000 });
   await expect(page.locator("#offline-status")).not.toHaveText("Ready offline");
-  await context.unroute("**/themes/chola-1.0.0.zip");
+  await context.unroute("**/themes/chola-1.1.0.zip");
   await page.locator("#retry-load").click();
   await expect(page.locator("#loading")).toBeHidden({ timeout: 40000 });
 });
@@ -278,7 +273,7 @@ test("theme checksum or path tampering cannot activate a pack", async ({ page, c
   const entries = unzipSync(await readFile("generated/chola-pack.zip"));
   entries["../unexpected.js"] = new TextEncoder().encode("malicious asset");
   const invalid = zipSync(entries);
-  await context.route("**/themes/chola-1.0.0.zip", (route) => route.fulfill({
+  await context.route("**/themes/chola-1.1.0.zip", (route) => route.fulfill({
     contentType: "application/zip", body: Buffer.from(invalid),
   }));
   await page.goto(root);

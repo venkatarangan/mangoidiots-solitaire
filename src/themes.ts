@@ -5,6 +5,7 @@ export interface ThemeManifest {
   author: string; attribution: string;
   files: { path: string; mime: string; bytes: number; sha256: string }[];
   cards: Record<string, string>; back: string; background: string;
+  compactCards?: Record<string, string>;
   audio: Record<"shuffle" | "draw" | "place" | "invalid" | "victory" | "music", string>;
   palette: { table: string; accent: string };
 }
@@ -47,6 +48,9 @@ function manifest(raw: unknown): ThemeManifest {
   }
   if (expanded > MAX_EXPANDED) throw new Error("Expanded theme exceeds 60 MB.");
   for (let i = 0; i < 52; i++) if (!paths.has(m.cards[String(i)])) throw new Error(`Theme is missing card ${i}.`);
+  if (m.compactCards) {
+    for (let i = 0; i < 52; i++) if (!paths.has(m.compactCards[String(i)])) throw new Error(`Theme is missing compact card ${i}.`);
+  }
   for (const path of [m.back, m.background, ...["shuffle", "draw", "place", "invalid", "victory", "music"].map((key) => m.audio[key as keyof typeof m.audio])]) {
     if (!paths.has(path)) throw new Error("Theme is missing a required image or sound.");
   }
@@ -65,7 +69,10 @@ export async function themeListings(base: URL): Promise<ThemeListing[]> {
   }
   return data.themes;
 }
-export async function loadTheme(base: URL, listing: ThemeListing, progress: (text: string, percent: number) => void): Promise<LoadedTheme> {
+class ThemeDownloadError extends Error {}
+class CachedThemeUnavailable extends Error {}
+
+export async function loadTheme(base: URL, listing: ThemeListing, progress: (text: string, percent: number) => void, cachedOnly = false): Promise<LoadedTheme> {
   const prefix = `mangoidiots-theme:${base.pathname}:${listing.id}:${listing.version}`;
   const metadataURL = new URL(`_theme/${listing.id}/${listing.version}/manifest.json`, base).href;
   const cache = await caches.open(prefix);
@@ -78,16 +85,28 @@ export async function loadTheme(base: URL, listing: ThemeListing, progress: (tex
     if (available.every(Boolean)) cachedManifest = candidate;
   }
   if (!cachedManifest) {
+    if (cachedOnly) throw new CachedThemeUnavailable("The previous theme is not completely cached.");
     progress(`Downloading ${listing.name}...`, 15);
-    const response = await fetch(new URL(listing.url, base), { cache: "no-cache" });
-    if (!response.ok) throw new Error(`Theme download failed (HTTP ${response.status}). Reconnect and retry.`);
+    let response: Response;
+    try { response = await fetch(new URL(listing.url, base), { cache: "no-cache" }); }
+    catch (error) {
+      if (!(error instanceof TypeError)) throw error;
+      throw new ThemeDownloadError("Theme download failed. Reconnect and retry.");
+    }
+    if (!response.ok) throw new ThemeDownloadError(`Theme download failed (HTTP ${response.status}). Reconnect and retry.`);
     const advertised = Number(response.headers.get("Content-Length") || 0);
     if (advertised > MAX_ZIP) throw new Error("Theme archive exceeds 30 MB.");
     if (!response.body) throw new Error("Theme download body is unavailable.");
     const reader = response.body.getReader(), chunks: Uint8Array[] = [];
     let downloaded = 0;
     while (true) {
-      const { value, done } = await reader.read();
+      let next: ReadableStreamReadResult<Uint8Array>;
+      try { next = await reader.read(); }
+      catch (error) {
+        if (!(error instanceof TypeError)) throw error;
+        throw new ThemeDownloadError("Theme download was interrupted. Reconnect and retry.");
+      }
+      const { value, done } = next;
       if (done) break;
       downloaded += value.byteLength;
       if (downloaded > MAX_ZIP) { await reader.cancel(); throw new Error("Theme archive exceeds 30 MB."); }
@@ -132,6 +151,29 @@ export async function loadTheme(base: URL, listing: ThemeListing, progress: (tex
   }
   progress("Opening your royal court...", 85);
   return { manifest: m, urls };
+}
+
+export async function loadPreferredTheme(base: URL, listings: ThemeListing[], saved: { theme: string; themeVersion: string },
+  progress: (text: string, percent: number) => void): Promise<{ theme: LoadedTheme; warning?: string }> {
+  const exact = listings.find((item) => item.id === saved.theme && item.version === saved.themeVersion);
+  if (exact) return { theme: await loadTheme(base, exact, progress) };
+  const upgrade = saved.themeVersion === "1.0.0" && ["chola", "mughal"].includes(saved.theme)
+    ? listings.find((item) => item.id === saved.theme && item.version === "1.1.0") : undefined;
+  if (!upgrade) throw new Error(`Your saved theme "${saved.theme}" is not available in this site's theme list. Restore the pack before continuing.`);
+  try { return { theme: await loadTheme(base, upgrade, progress) }; }
+  catch (error) {
+    const quota = error instanceof DOMException && error.name === "QuotaExceededError";
+    if (!(error instanceof ThemeDownloadError) && !quota) throw error;
+    const reason = quota ? "There is not enough browser storage for the theme update." : error.message;
+    const previous = { ...upgrade, version: saved.themeVersion, url: `themes/${saved.theme}-${saved.themeVersion}.zip` };
+    try {
+      return { theme: await loadTheme(base, previous, progress, true),
+        warning: `${reason} Your installed theme is still available. Retry the clearer cards in Themes.` };
+    } catch (cachedError) {
+      if (!(cachedError instanceof CachedThemeUnavailable)) throw cachedError;
+      throw error;
+    }
+  }
 }
 export function disposeTheme(theme: LoadedTheme): void { for (const url of theme.urls.values()) URL.revokeObjectURL(url); }
 

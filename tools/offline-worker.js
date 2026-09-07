@@ -41,7 +41,7 @@ async function checkResponse(response, file) {
   } else if (file.path === "themes.json") {
     const list = await response.clone().json();
     if (list.defaultTheme !== "chola" || !Array.isArray(list.themes)
-        || !["chola", "mughal"].every((id) => list.themes.some((theme) => theme.id === id && theme.version === "1.0.0"))) {
+        || !["chola", "mughal"].every((id) => list.themes.some((theme) => theme.id === id && theme.version === "1.1.0"))) {
       throw new Error("The server returned an invalid theme menu.");
     }
     for (const theme of list.themes) {

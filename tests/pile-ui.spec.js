@@ -4,7 +4,7 @@ import { loaded, readSave, stockClick, fixture, layout } from "./helpers.js";
 async function selectTheme(page, id) {
   await page.getByRole("button", { name: "Choose theme", exact: true }).click();
   await expect(page.locator("#dialog-title")).toHaveText("Theme collection");
-  await page.getByLabel("Available theme packs").selectOption(`${id}@1.0.0`);
+  await page.getByLabel("Available theme packs").selectOption(`${id}@1.1.0`);
   const name = await page.getByLabel("Available theme packs").locator("option:checked").textContent();
   await page.getByRole("button", { name: "Use theme", exact: true }).click();
   await expect(page.locator("#theme-label")).toHaveText(name);
@@ -18,9 +18,11 @@ async function pileFixture(page, kind, suit = 0, rank = 3) {
       ? Array.from({length:value.rank},(_,r)=>s*13+r) : []);
     const waste=value.kind==="waste" ? [1,19] : [];
     const target=value.kind==="waste" ? 7 : (value.suit%2 ? 0 : 13)+value.rank;
-    const used=[...foundations.flat(),...waste,target];
+    // Keep content height fixed so the visual comparison isolates the pile, not the resized background.
+    const steadyColumn=[12,24];
+    const used=[...foundations.flat(),...waste,target,...steadyColumn];
     current.board={stock:Array.from({length:52},(_,i)=>i).filter(i=>!used.includes(i)),waste,foundations,
-      tableau:[{cards:[target],faceUp:0},...Array.from({length:6},()=>({cards:[],faceUp:0}))]};
+      tableau:[{cards:[target],faceUp:0},{cards:steadyColumn,faceUp:0},...Array.from({length:5},()=>({cards:[],faceUp:0}))]};
     current.undo=[];current.movePoints=0;current.undoPenalty=0;current.moves=0;
     current.elapsedMs=0;current.started=false;return current;
   `, { kind, suit, rank });
@@ -29,11 +31,11 @@ async function pileFixture(page, kind, suit = 0, rank = 3) {
 async function compareHeldPile(page, kind, suit = 0, rank = 3, testInfo) {
   await page.locator("#resume").click();
   const before = await readSave(page), l = await layout(page);
-  const x = l.x(kind === "waste" ? 1 : suit + 3);
-  const clip = { x: Math.ceil(x + 3), y: Math.ceil(l.top + 3), width: Math.floor(l.width - 6), height: Math.floor(l.height - 6) };
+  const { x, y } = l.piles[kind === "waste" ? "waste" : `f${suit}`];
+  const clip = { x: Math.ceil(x + 3), y: Math.ceil(y + 3), width: Math.floor(l.width - 6), height: Math.floor(l.height - 6) };
   const image = () => page.screenshot({ clip });
   const drag = async () => {
-    await page.mouse.move(x + l.width / 2, l.top + l.height / 2);
+    await page.mouse.move(x + l.width / 2, y + l.height / 2);
     await page.mouse.down();
     await page.mouse.move(l.x(0) + l.width / 2, l.tableau + l.height / 2, { steps: 12 });
     await expect(page.locator("#message")).toHaveText("Release to place on column 1.");

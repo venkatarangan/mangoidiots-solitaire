@@ -24,17 +24,37 @@ test("Pages output is complete and contains no server-side deployment files", as
     "social-preview.png",
     "sw.js",
     "themes.json",
-    "themes/chola-1.0.0.zip",
-    "themes/mughal-1.0.0.zip",
+    "themes/chola-1.1.0.zip",
+    "themes/mughal-1.1.0.zip",
   ]) {
     assert.ok(inventory.includes(required), `missing ${required}`);
   }
   assert.ok(inventory.some((file) => /^assets\/index-[\w-]+\.js$/.test(file)));
   assert.ok(inventory.some((file) => /^assets\/index-[\w-]+\.css$/.test(file)));
   assert.deepEqual(inventory.filter((file) => file.endsWith(".zip")), [
-    "themes/chola-1.0.0.zip",
-    "themes/mughal-1.0.0.zip",
+    "themes/chola-1.1.0.zip",
+    "themes/mughal-1.1.0.zip",
   ]);
+});
+
+test("published assets exclude private paths, source maps and image metadata", async () => {
+  const inventory = await files("dist");
+  assert.equal(inventory.filter((file) => /\.(?:map|log|env|sqlite|db|pem|key)$/.test(file)).length, 0);
+  for (const file of inventory) {
+    const bytes = await readFile(path.join("dist", file));
+    if (/\.(?:js|css|html|json|webmanifest)$/.test(file)) {
+      assert.doesNotMatch(bytes.toString("utf8"), /[A-Z]:[\\/](?:Users|DevTemp)[\\/]|\/(?:Users|home)\/|session-state/i, file);
+    }
+    if (!file.endsWith(".png")) continue;
+    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", file);
+    for (let offset = 8; offset < bytes.length;) {
+      const length = bytes.readUInt32BE(offset);
+      const type = bytes.toString("ascii", offset + 4, offset + 8);
+      assert.ok(offset + length + 12 <= bytes.length, `${file}: invalid PNG chunk`);
+      assert.ok(!["eXIf", "tEXt", "iTXt", "zTXt"].includes(type), `${file}: embedded ${type} metadata`);
+      offset += length + 12;
+    }
+  }
 });
 
 test("Pages HTML supports nested and custom-domain base paths", async () => {

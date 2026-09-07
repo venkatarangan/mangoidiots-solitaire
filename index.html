@@ -39,19 +39,29 @@
         <div><span class="metric-label">TIME</span><strong id="timer">00:00</strong></div>
         <div class="moves-metric"><span class="metric-label">MOVES</span><strong id="moves">0</strong></div>
       </div>
+      <button id="themes" class="theme-button" type="button" aria-label="Choose theme" aria-haspopup="dialog" title="Choose theme">
+        Themes <span class="theme-current">&middot; <span id="theme-label"></span></span><span aria-hidden="true">&#9662;</span>
+      </button>
       <button class="icon-button" id="mute" aria-label="Mute all sound" title="Mute all sound">&#9835;</button>
       <button class="icon-button" id="menu" aria-label="Open menu" title="Menu">&#9776;</button>
     </header>
     <div class="game-caption">
       <span id="difficulty">Easy</span><span class="caption-dot">&bull;</span><span id="deal-label"></span>
-      <button id="themes" class="theme-button" type="button" aria-label="Choose theme" aria-haspopup="dialog" title="Choose theme">
-        Themes <span class="theme-current">&middot; <span id="theme-label"></span></span><span aria-hidden="true">&#9662;</span>
-      </button>
       <span id="offline-status">Preparing your table...</span>
     </div>
+    <nav class="view-controls" aria-label="Table view">
+      <button id="zoom-out" aria-label="Zoom out" title="Smaller cards">&#8722;</button>
+      <output id="zoom-level" aria-live="polite" aria-label="Card zoom">100%</output>
+      <button id="zoom-in" aria-label="Zoom in" title="Larger cards">+</button>
+      <button id="zoom-fit" title="Compact overview: fit columns, and the whole table in landscape" aria-pressed="false">Fit</button>
+      <button id="pan-table" title="Swipe to scroll instead of dragging cards" aria-pressed="false">Scroll</button>
+      <button id="table-settings" aria-label="Table appearance" aria-haspopup="dialog" title="Background colour">Colour</button>
+    </nav>
     <main>
       <section id="board-wrap" aria-label="Klondike card table">
-        <div id="board"></div>
+        <div id="board-viewport" tabindex="0" role="region" aria-label="Scrollable card table">
+          <div id="board"></div>
+        </div>
         <div id="board-controls" class="sr-only" aria-label="Keyboard card controls"></div>
         <div id="pause-overlay" class="overlay" hidden>
           <div class="pause-card">
@@ -84,6 +94,10 @@
   <dialog id="dialog" aria-labelledby="dialog-title">
     <div class="dialog-heading"><h2 id="dialog-title"></h2><button id="dialog-close" class="icon-button" aria-label="Close dialog">&#215;</button></div>
     <div id="dialog-body"></div>
+  </dialog>
+  <dialog id="keyboard-dialog" aria-label="Card list and keyboard play">
+    <button id="keyboard-close" class="secondary">Return to table</button>
+    <p id="keyboard-message" role="status" aria-live="polite"></p>
   </dialog>
   <div id="loading" class="loading-screen">
     <div class="loading-emblem" aria-hidden="true">&#9830;</div>

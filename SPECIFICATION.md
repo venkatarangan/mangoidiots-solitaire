@@ -6,7 +6,8 @@ Mangoidiots Solitaire is a colourful, offline-first Draw 1 Klondike game for
 phones, tablets, and desktop browsers. It combines familiar solitaire rules
 with original Indian-history-inspired visual and musical themes.
 
-- **Current application version:** 1.2.0
+- **Application version:** 1.3.0
+- **Previous working release:** 1.2.0, commit `f0ef819`
 - **Hosting:** GitHub Pages
 - **Production URL:** <https://solitaire.mangoidiots.com/>
 
@@ -18,7 +19,7 @@ branding, source code, or proprietary deal collection.
 | Area | Required behaviour |
 | --- | --- |
 | Rules | Klondike, Draw 1 |
-| Layout | Stock and waste on the left; four suit foundations on the right |
+| Layout | Stock and waste on the left; foundations above the columns, or beside them in short landscape |
 | Difficulty | Easy, Medium, and Difficult proven-solvable deals |
 | Scoring | Standard-style move points, Undo penalties, recycling rules, timer, and victory bonus |
 | Hints | Explain a useful legal move without moving the cards |
@@ -26,7 +27,7 @@ branding, source code, or proprietary deal collection.
 | Reset | Restart the same deal and record the previous attempt |
 | New Game | Select a difficulty and choose another deal |
 | Auto-finish | Offer only when the remaining legal sequence is deterministic |
-| Timer | Count active play only; pause while dialogs or pause state stop play |
+| Timer | Count active play only; settings/help/results pause play, while the interactive keyboard card list remains playable |
 | History | Retain the latest 500 completed, restarted, or abandoned attempts |
 
 ## Interaction
@@ -42,6 +43,9 @@ branding, source code, or proprietary deal collection.
   card immediately reveals the card underneath.
 - Only the top waste or foundation card is interactive.
 - Touch targets are at least 44 CSS pixels where practical.
+- The layout is calculated from visible width and height. Genuine resizes and
+  scrolling cancel a held drag safely. A tap-selected card remains selected
+  while scrolling to a distant destination.
 
 ## Themes
 
@@ -69,14 +73,41 @@ branding, source code, or proprietary deal collection.
   locally before activation.
 - A failed update cannot replace a usable cached theme.
 - New themes are added through the repository and deployed with the site.
+- Each 1.1.0 theme includes standard and large-index faces. Smaller cards use a
+  clear horizontal rank/suit strip while retaining the original court artwork.
+- A saved 1.0.0 theme upgrades explicitly to the same theme's 1.1.0 pack, without
+  resetting progress. A failed download retains a complete cached previous pack
+  and explains how to retry.
 
 ## Visual and audio experience
 
 - The board must remain readable at 320 px portrait width and in phone
   landscape.
-- All seven tableau columns remain visible without horizontal page scrolling.
+- At the default card size, seven tableau columns fit across the table. Zoomed
+  tables scroll internally in either direction without widening the page.
+- Phone ranks have at least 14 CSS pixels of nominal type size in portrait and
+  at least 12 in the shortest supported landscape layout at 100% zoom. Fit is an
+  optional smaller overview; scrollable readable cards are the default.
+- Landscape acceptance includes visible viewports of 667 x 300, 780 x 320, and
+  844 x 390 CSS pixels, with browser controls present.
+- Short landscape uses a side area for stock, waste, and foundations. Long runs
+  retain large indices and scroll instead of being squeezed into the height.
+- Visible zoom controls provide 75%, 100%, 125%, 150%, 175%, 200%, and Fit.
+  Fit includes the complete landscape table; portrait can still scroll long runs.
+- Scroll mode uses one-finger swipes over cards without moving them. Turning it
+  off restores card drag/tap interactions. Selected cards survive scrolling.
+- Zoom and a preset/custom table colour persist locally, including across theme
+  changes. A theme-background reset and contrasting pile labels are provided.
+- Secondary information and the keyboard list remain accessible from the menu.
+- Back stacks may overlap tightly, but every exposed card's identifying strip
+  remains visible. Hidden identities remain concealed.
+- Device-aware canvas and text resolution supports Retina screens while bounding
+  texture dimensions and memory use.
 - Rank and suit indices use conventional high-contrast colours.
 - Animations cover deals, legal moves, score feedback, hints, and victory.
+- Successful manual or auto-finish wins show fireworks in the visible results
+  panel. Closing/skipping releases animation resources. Reduced effects use a
+  static celebration; reloading a completed game does not replay fireworks.
 - Reduced-motion mode removes unnecessary movement without reducing usability.
 - Shuffle, draw, placement, invalid action, victory, and background music have
   independent synthesized assets.
@@ -93,6 +124,9 @@ branding, source code, or proprietary deal collection.
 - Corrupt or unsupported saves produce a visible error and are not silently
   overwritten.
 - Cloud synchronization is explicitly out of scope.
+- Publication excludes personal saves, browser profiles, credentials, private
+  filesystem paths, and diagnostic session artifacts. Prompt history contains
+  product requests, not private tool/session context.
 
 ## GitHub Pages delivery
 
@@ -143,6 +177,9 @@ A release is ready only when:
 8. `index.html`, `resume/index.html`, manifest, icons, themes, and service worker
    are present.
 9. The public Pages URL loads over HTTPS and reaches **Ready offline**.
+10. Both themes pass Fit containment, scroll/zoom, background persistence,
+    large-index, rotation, victory, and old-theme upgrade coverage. Browser
+    emulation is distinguished from physical-device review.
 
 ## Deferred work
 

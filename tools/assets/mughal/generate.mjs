@@ -22,9 +22,12 @@ async function add(path, mime, data) {
 }
 await mkdir(output, { recursive: true });
 const cards = {};
+const compactCards = {};
 for (let id = 0; id < 52; id++) {
   cards[String(id)] = `cards/${id}.svg`;
   await add(cards[id], "image/svg+xml", cardSvg(id));
+  compactCards[String(id)] = `cards/compact-${id}.svg`;
+  await add(compactCards[id], "image/svg+xml", cardSvg(id, true));
 }
 await add("table/card-back.svg", "image/svg+xml", backSvg());
 await add("table/garden.svg", "image/svg+xml", backgroundSvg());
@@ -38,12 +41,13 @@ const attribution = "Generated with OpenAI GPT-6 Astra. Original procedural vect
 const manifest = {
   schemaVersion: 1,
   id: "mughal",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Mughal Gardens",
   description: "Original miniature-inspired garden courts, ivory and floral-inlay cards, lapis and turquoise geometry, and a gentle original oud- and reed-inspired instrumental soundscape.",
   author: "Mangoidiots Solitaire · Generated with OpenAI GPT-6 Astra",
   files,
   cards,
+  compactCards,
   back: "table/card-back.svg",
   background: "table/garden.svg",
   audio,
@@ -79,8 +83,8 @@ const preview = `<!doctype html>
 <div class="swatches"><span style="background:#25477a">Lapis</span><span style="background:#218b8e">Turquoise</span><span style="background:#287858">Emerald</span><span style="background:#965567">Rose</span><span style="background:#e4c783;color:#40352a">Antique gold</span><span style="background:#f9f4e6;color:#40352a">Ivory marble</span></div>
 <h2>Twelve imagined court figures</h2><p>Emperors wear layered turbans, feather ornaments and cross-over jama-inspired robes; their objects evoke gardens, architecture, correspondence and worldly curiosity. Veiled queens carry flowers, an oud-like lute, a manuscript or a floral vase. Courtiers are an imagined falconer, garden steward, painter and scribe. No individual is a named or authenticated historical portrait.</p>
 <section class="board cards court">${[12,25,38,51,11,24,37,50,10,23,36,49].map(id=>figure(id,true)).join("")}</section>
-<h2>Small-card legibility</h2><p>58-pixel-wide cards. Conventional high-contrast rank and suit indices remain at both corners; red hearts/diamonds and dark spades/clubs.</p>
-<div class="small">${[0,9,10,11,12,13,22,23,24,25,26,35,39,48].map(id=>`<img src="../themes/mughal/${cards[id]}" alt="${cardName(id)} at mobile size" width="58" height="81">`).join("")}</div>
+<h2>Small-card legibility</h2><p>Fifty-two standard faces and fifty-two compact faces preserve the original garden courts. Compact faces have a clear horizontal rank-and-suit strip: 86-unit bold ranks, including tens, share baseline 77 and are nominally 14⅓ CSS pixels at 40-pixel card width. Expose the full 86-unit strip (14⅓ pixels at that width), fitting a card-width × 0.36 overlap step; the 64-unit suit is centered at y=44 and artwork begins near y=90. Standard faces retain stacked corner indices with a declared 92-unit exposed height (card-width × 92/240). Red hearts/diamonds and dark spades/clubs retain familiar pips.</p>
+${[40,58,70].map(width => `<h3>${width}-pixel-wide compact cards</h3><div class="small">${[0,9,10,11,12,13,22,23,24,25,26,35,39,48].map(id=>`<img src="../themes/mughal/${compactCards[id]}" alt="${cardName(id)} at ${width}-pixel mobile size" style="width:${width}px" width="${width}" height="${width * 1.4}">`).join("")}</div>`).join("")}
 <h2>Garden at blue hour · original instrumental loop</h2><p>A newly composed 28.8-second instrumental miniature with doubled-course oud-like plucks, airy ney/reed-like lead, soft frame-drum pulses and a spacious room response. Broad Sufi, Indo-Persian and Islamicate influences are creative reference points, not a claim of devotional or historical authenticity. All six sounds are rendered PCM16 mono at 22,050 Hz. Playback is opt-in.</p>
 <div class="sounds">${Object.entries(audio).map(([role,path])=>`<label>${role === "music" ? "Garden at blue hour · loop" : role}<audio controls ${role === "music" ? "loop" : ""} preload="none" src="../themes/mughal/${path}"></audio></label>`).join("")}</div>
 <h2>The complete deck</h2><section class="board cards">${Array.from({length:52},(_,id)=>figure(id)).join("")}</section>
@@ -106,7 +110,7 @@ for (const file of decoded.files) {
         wav.readUInt32LE(24)!==SAMPLE_RATE) throw new Error(`Invalid WAV: ${file.path}`);
   }
 }
-console.log(`Generated and verified ${files.length} media assets: 52 faces, back, background, six WAVs.`);
+console.log(`Generated and verified ${files.length} media assets: 52 standard faces, 52 compact faces, back, background, six WAVs.`);
 console.log(`ZIP: generated/mughal-pack.zip (${zip.byteLength.toLocaleString("en-US")} bytes)`);
 console.log(`SHA-256: ${hash(zip)}`);
 console.log("Preview: generated/mughal-preview.html");

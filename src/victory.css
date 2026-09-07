@@ -1,0 +1,138 @@
+.victory-celebration {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 140px;
+  margin-block: 12px;
+  overflow: hidden;
+  border: 1px solid #e4c47b65;
+  border-radius: 16px;
+  color: #ffe3a3;
+  background:
+    radial-gradient(ellipse at 50% 72%, #35796b65, transparent 66%),
+    radial-gradient(circle at 18% 33%, #ffdc8238 0 1px, transparent 2px),
+    radial-gradient(circle at 81% 66%, #adede14d 0 1px, transparent 2px),
+    linear-gradient(125deg, #132e31, #21364b 55%, #352645);
+  contain: layout paint;
+  pointer-events: none;
+  user-select: none;
+}
+
+.victory-celebration__art,
+.victory-celebration__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.victory-celebration__canvas { z-index: 1; }
+.victory-celebration__art { z-index: 2; }
+
+.victory-celebration__emblem {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 150px;
+  height: 100px;
+  margin-left: -75px;
+  transform-origin: 50% 85%;
+}
+
+.victory-celebration__crown {
+  position: absolute;
+  top: -3px;
+  left: 62px;
+  font: 26px/1 Georgia, serif;
+  text-shadow: 0 0 14px #ffd67375;
+}
+
+.victory-celebration__card {
+  position: absolute;
+  top: 28px;
+  left: 53px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 43px;
+  height: 60px;
+  padding-top: 12px;
+  border: 1px solid #eacb91;
+  border-radius: 5px;
+  color: #183e41;
+  background: linear-gradient(145deg, #fffbee, #f3dfb8);
+  box-shadow: 0 3px 7px #071c3066;
+  font: 29px/1 Georgia, serif;
+  transform-origin: 50% 95%;
+}
+
+.victory-celebration__card small {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  font: bold 12px/1 Georgia, serif;
+}
+
+.victory-celebration__card--clubs { transform: translateX(-32px) rotate(-24deg); }
+.victory-celebration__card--diamonds { transform: translateX(-11px) rotate(-8deg); color: #a33642; }
+.victory-celebration__card--spades { transform: translateX(11px) rotate(8deg); }
+.victory-celebration__card--hearts { transform: translateX(32px) rotate(24deg); color: #a33642; }
+
+.victory-celebration__caption {
+  position: absolute;
+  inset: auto 8px 12px;
+  text-align: center;
+  font: bold 16px/1.2 Georgia, serif;
+  letter-spacing: .035em;
+}
+
+.victory-celebration__star {
+  position: absolute;
+  text-shadow: 0 0 10px #ffe5a138;
+  font: 28px/1 Georgia, serif;
+}
+
+.victory-celebration__star--one { left: 12%; top: 28%; }
+.victory-celebration__star--two { left: 25%; top: 65%; font-size: 18px; color: #9de9d9; }
+.victory-celebration__star--three { right: 11%; top: 22%; color: #d9bff7; }
+.victory-celebration__star--four { right: 22%; top: 64%; font-size: 20px; }
+
+.victory-celebration[data-state="animated"] .victory-celebration__emblem {
+  animation: victory-emblem-arrival 900ms cubic-bezier(.2, .7, .3, 1) both;
+}
+
+.victory-celebration[data-state="animated"] .victory-celebration__star {
+  animation: victory-star-drift 2400ms ease-in-out 2;
+}
+
+.victory-celebration[data-state="animated"] .victory-celebration__star--two,
+.victory-celebration[data-state="animated"] .victory-celebration__star--three {
+  animation-direction: reverse;
+}
+
+@keyframes victory-emblem-arrival {
+  0% { transform: translateY(12px) scale(.84) rotate(-7deg); }
+  65% { transform: translateY(-3px) scale(1.04) rotate(2deg); }
+  100% { transform: translateY(0) scale(1) rotate(0); }
+}
+
+@keyframes victory-star-drift {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-7px) rotate(12deg); }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .victory-celebration { height: 96px; margin-block: 8px; }
+  .victory-celebration__emblem { top: -12px; transform: scale(.72); }
+  .victory-celebration__caption { bottom: 7px; font-size: 14px; }
+  .victory-celebration[data-state="animated"] .victory-celebration__emblem { animation: none; }
+  .victory-celebration__star { font-size: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .victory-celebration[data-state="animated"] .victory-celebration__emblem,
+  .victory-celebration[data-state="animated"] .victory-celebration__star { animation: none; }
+  .victory-celebration__canvas { display: none; }
+}

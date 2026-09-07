@@ -9,7 +9,8 @@
   </defs>
     <rect x="1" y="1" width="238" height="334" rx="15" fill="url(#paper)" stroke="#c5a96a" stroke-width="2"/>
     <rect x="7" y="7" width="226" height="322" rx="11" fill="none" stroke="#d5bc82" stroke-width=".65"/>
-    <path d="M49 283V111Q49 70 81 58L120 42L159 58Q191 70 191 111V283Z" fill="url(#arch)" stroke="url(#metal)" stroke-width="3"/>
+    
+    <g id="card-art"><path d="M49 283V111Q49 70 81 58L120 42L159 58Q191 70 191 111V283Z" fill="url(#arch)" stroke="url(#metal)" stroke-width="3"/>
     <circle cx="120" cy="127" r="73" fill="url(#halo)" />
     <g opacity=".19"><g transform="translate(156 201) scale(0.8)" fill="#fff3c1">
     <path d="M-60 0H60V-9H48V-22H41V-35H34V-47H27V-59H20V-70H13V-80H8V-87H-8V-80H-13V-70H-20V-59H-27V-47H-34V-35H-41V-22H-48V-9H-60Z"/>
@@ -69,5 +70,10 @@
     <circle cx="122" cy="85" r="3" fill="#69ce91" stroke="#fbe7a0" stroke-width="1"/><circle cx="122" cy="98" r="3" fill="#69ce91" stroke="#fbe7a0" stroke-width="1"/><circle cx="122" cy="109" r="3" fill="#69ce91" stroke="#fbe7a0" stroke-width="1"/>
     <circle cx="146.00" cy="107.00" r="1.8" fill="#f6dea0" /><circle cx="145.37" cy="109.00" r="1.8" fill="#f6dea0" /><circle cx="143.52" cy="110.90" r="1.8" fill="#f6dea0" /><circle cx="140.55" cy="112.61" r="1.8" fill="#f6dea0" /><circle cx="136.59" cy="114.04" r="1.8" fill="#f6dea0" /><circle cx="131.85" cy="115.11" r="1.8" fill="#f6dea0" /><circle cx="126.56" cy="115.77" r="1.8" fill="#f6dea0" /><circle cx="121.00" cy="116.00" r="1.8" fill="#f6dea0" /><circle cx="115.44" cy="115.77" r="1.8" fill="#f6dea0" /><circle cx="110.15" cy="115.11" r="1.8" fill="#f6dea0" /><circle cx="105.41" cy="114.04" r="1.8" fill="#f6dea0" /><circle cx="101.45" cy="112.61" r="1.8" fill="#f6dea0" /><circle cx="98.48" cy="110.90" r="1.8" fill="#f6dea0" /><circle cx="96.63" cy="109.00" r="1.8" fill="#f6dea0" /><circle cx="96.00" cy="107.00" r="1.8" fill="#f6dea0" />
     <path d="M55 288Q120 279 185 288L181 307Q120 299 59 307Z" fill="#f4e1b1" stroke="#c69948" stroke-width=".8"/>
-    <text x="120" y="297" text-anchor="middle" fill="#5e452c" font-family="Georgia,serif" font-size="8.5" font-weight="bold" letter-spacing=".9">ROYAL RECORDS</text><text x="28" y="39" text-anchor="middle" fill="#182d34" font-family="Georgia,serif" font-weight="bold" font-size="37">K</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-19C-13-19-13-4-5-1C-19-9-24 11-12 14C-7 16-2 12 0 8C2 12 7 16 12 14C24 11 19-9 5-1C13-4 13-19 0-19ZM-3 6L-7 21H7L3 6Z" fill="#182d34" /></g><g transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#182d34" font-family="Georgia,serif" font-weight="bold" font-size="37">K</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-19C-13-19-13-4-5-1C-19-9-24 11-12 14C-7 16-2 12 0 8C2 12 7 16 12 14C24 11 19-9 5-1C13-4 13-19 0-19ZM-3 6L-7 21H7L3 6Z" fill="#182d34" /></g></g>
+    <text x="120" y="297" text-anchor="middle" fill="#5e452c" font-family="Georgia,serif" font-size="8.5" font-weight="bold" letter-spacing=".9">ROYAL RECORDS</text></g>
+    <g id="primary-index">
+      <text id="index-rank" x="34" y="52" text-anchor="middle" fill="#182d34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="48">K</text>
+      <g id="index-suit"><g transform="translate(34 75) rotate(0) scale(0.7619047619047619)"><path d="M0-19C-13-19-13-4-5-1C-19-9-24 11-12 14C-7 16-2 12 0 8C2 12 7 16 12 14C24 11 19-9 5-1C13-4 13-19 0-19ZM-3 6L-7 21H7L3 6Z" fill="#182d34" /></g></g>
+    </g>
+    <g id="secondary-index" transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#182d34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="37">K</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-19C-13-19-13-4-5-1C-19-9-24 11-12 14C-7 16-2 12 0 8C2 12 7 16 12 14C24 11 19-9 5-1C13-4 13-19 0-19ZM-3 6L-7 21H7L3 6Z" fill="#182d34" /></g></g>
   </svg>

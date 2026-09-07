@@ -2,9 +2,11 @@ import "./styles.css";
 import { applyMove, newBoard, isWon, cardLabel, legalMoves, hintMoves, autoFinish, type Move } from "./game/engine";
 import { deals, type Deal, type Difficulty } from "./data/deals";
 import { Store, acquireGameLock, defaults, playingScore, summary, type Attempt, type Preferences } from "./storage";
-import { loadTheme, themeListings, Sound, disposeTheme, type LoadedTheme, type ThemeListing } from "./themes";
+import { loadTheme, loadPreferredTheme, themeListings, Sound, disposeTheme, type LoadedTheme, type ThemeListing } from "./themes";
 import { createBoard, type RoyalBoard, type Selection } from "./board";
 import logoURL from "./assets/mangoidiots-logo.png";
+import { ZOOM_LEVELS, validZoom, validColour, tableInk } from "./table-appearance";
+import { mountVictoryCelebration } from "./victory";
 
 function element<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -16,6 +18,16 @@ const dialog = element<HTMLDialogElement>("dialog");
 const body = element("dialog-body");
 const loading = element("loading");
 const shell = document.querySelector<HTMLElement>(".app-shell")!;
+const keyboardDialog = element<HTMLDialogElement>("keyboard-dialog");
+function updateViewport(): void {
+  const height = (window.visualViewport?.height ?? innerHeight) * (window.visualViewport?.scale ?? 1);
+  const compact = innerWidth > height && height <= 500;
+  document.documentElement.style.setProperty("--visible-height", `${height}px`);
+  document.documentElement.classList.toggle("compact-play", compact);
+}
+updateViewport();
+window.visualViewport?.addEventListener("resize", updateViewport);
+window.addEventListener("resize", updateViewport);
 let store: Store;
 let current: Attempt;
 let preferences: Preferences = defaults();
@@ -32,14 +44,20 @@ let resumeAfterDialog = false;
 let protectionRequested = false;
 let hintIndex = 0;
 let lastFocused: HTMLElement | null = null;
+let panning = false;
+let stopCelebration: (() => void) | undefined;
 
 function elapsed(): number { return playing && current.started ? clockBase + performance.now() - clockStart : current.elapsedMs; }
 function formatTime(ms: number): string {
   const seconds = Math.floor(ms / 1000);
   return `${Math.floor(seconds / 60).toString().padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
 }
-function message(text: string): void { element("message").textContent = text; }
+function message(text: string): void {
+  element("message").textContent = text;
+  element("keyboard-message").textContent = text;
+}
 function report(error: unknown, fatal = false): void {
+  if (keyboardDialog.open) keyboardDialog.close();
   console.error(error);
   element("error").textContent = error instanceof Error ? error.message : String(error);
   element("error").hidden = false;
@@ -95,6 +113,13 @@ function render(animate = false): void {
   element<HTMLButtonElement>("finish").disabled = !allowed();
   element("mute").textContent = preferences.muted ? "\u266a\u00d7" : "\u266b";
   element("mute").setAttribute("aria-label", preferences.muted ? "Unmute sound" : "Mute all sound");
+  element("zoom-level").textContent = preferences.zoom === 0 ? "Fit" : `${Math.round(preferences.zoom * 100)}%`;
+  element("zoom-fit").setAttribute("aria-pressed", String(preferences.zoom === 0));
+  element("pan-table").setAttribute("aria-pressed", String(panning));
+  element("board-viewport").classList.toggle("panning", panning);
+  element<HTMLButtonElement>("zoom-out").disabled = busy || failed || preferences.zoom <= ZOOM_LEVELS[0];
+  element<HTMLButtonElement>("zoom-in").disabled = busy || failed || preferences.zoom === ZOOM_LEVELS.at(-1);
+  element<HTMLButtonElement>("zoom-fit").disabled = busy || failed;
   scene.reduced(preferences.reduced);
   scene.render(current.board, selection, animate);
   renderAccessible();
@@ -170,8 +195,8 @@ async function perform(move: Move, automatic = false): Promise<void> {
     sound.effect(move.type === "move" ? "place" : "draw");
     message(result.description);
     if (won) {
-      sound.effect("victory"); scene.celebrate();
-      showVictory();
+      sound.effect("victory");
+      showVictory(true);
     }
   } catch (error) { busy = false; report(error, true); }
 }
@@ -252,6 +277,7 @@ async function openDialog(title: string): Promise<void> {
   dialog.showModal();
 }
 function closeDialog(restore = true): void {
+  stopCelebration?.(); stopCelebration = undefined;
   dialog.close();
   if (restore && resumeAfterDialog) resume();
   resumeAfterDialog = false;
@@ -324,9 +350,76 @@ async function menuDialog(): Promise<void> {
   const change = (action: () => Promise<void>) => async () => { closeDialog(); await action(); };
   grid.append(button("New game", change(newGameDialog)), button("Restart this deal", change(resetDialog)),
     button("Game history", change(historyDialog)), button("Sound & effects", change(settingsDialog)),
-    button("Theme collection", change(themesDialog)), button("How to play", change(helpDialog)),
-    button("About Mangoidiots Solitaire", change(aboutDialog)));
+    button("Theme collection", change(themesDialog)), button("Table appearance", change(tableSettingsDialog)), button("How to play", change(helpDialog)),
+    button("About Mangoidiots Solitaire", change(aboutDialog)),
+    button("Card list & keyboard play", () => {
+      closeDialog();
+      const panel = element<HTMLDetailsElement>("accessible-panel");
+      panel.open = true; keyboardDialog.append(panel); keyboardDialog.showModal();
+      element("keyboard-close").focus();
+    }));
   body.append(grid, control("p", "Your game stays on this browser and device. Clearing site data can remove saved games and downloaded themes.", "fine-print"));
+  body.append(control("p", `${current.difficulty} \u00b7 ${current.dealId} \u00b7 ${theme.manifest.name} \u00b7 ${element("offline-status").textContent}`, "fine-print"));
+}
+async function setZoom(zoom: number): Promise<void> {
+  if (!validZoom(zoom)) throw new Error("Choose a supported card zoom.");
+  if (busy || failed) return;
+  busy = true;
+  try {
+    const next = { ...preferences, zoom };
+    current.elapsedMs = elapsed();
+    await store.save(current, next);
+    preferences = next;
+    busy = false;
+    render();
+    if (zoom === 0) element("board-viewport").scrollTo(0, 0);
+    message(zoom === 0 ? "Compact overview. Use + for larger cards." : `${Math.round(zoom * 100)}% cards. Use Scroll to swipe the table, then turn Scroll off to move cards.`);
+  } catch (error) { busy = false; report(error, true); }
+}
+async function zoomBy(direction: number): Promise<void> {
+  const currentZoom = preferences.zoom || 1;
+  const index = ZOOM_LEVELS.indexOf(currentZoom);
+  await setZoom(ZOOM_LEVELS[Math.max(0, Math.min(ZOOM_LEVELS.length - 1, index + direction))]);
+}
+async function setBackground(colour: string | null): Promise<void> {
+  if (colour !== null && !validColour(colour)) throw new Error("Choose a valid background colour.");
+  if (busy || failed) return;
+  busy = true;
+  try {
+    const next = { ...preferences, background: colour };
+    current.elapsedMs = elapsed();
+    await store.save(current, next);
+    preferences = next;
+    busy = false;
+    applyThemeAppearance(); render();
+  } catch (error) { busy = false; report(error, true); }
+}
+async function tableSettingsDialog(): Promise<void> {
+  await openDialog("Table appearance");
+  if (!dialog.open) return;
+  body.append(control("p", "Choose the playing-surface colour. Your choice stays with you when switching themes; the controls keep their readable theme colours."));
+  const palette = control("div", undefined, "colour-swatches");
+  const row = control("label", undefined, "settings-row"), input = control("input");
+  input.type = "color"; input.value = preferences.background ?? theme.manifest.palette.table;
+  input.setAttribute("aria-label", "Custom background colour");
+  const refresh = () => {
+    input.value = preferences.background ?? theme.manifest.palette.table;
+    for (const node of palette.querySelectorAll<HTMLButtonElement>("button")) {
+      node.setAttribute("aria-pressed", String(node.dataset.colour === preferences.background));
+    }
+  };
+  for (const [name, colour] of [["Forest", "#103e38"], ["Ocean", "#173b53"], ["Plum", "#442747"],
+    ["Charcoal", "#25282d"], ["Wine", "#542a35"], ["Ivory", "#f5eddb"]]) {
+    const swatch = button(name, async () => { await setBackground(colour); refresh(); });
+    swatch.dataset.colour = colour; swatch.style.backgroundColor = colour; swatch.style.color = tableInk(colour);
+    palette.append(swatch);
+  }
+  input.addEventListener("change", () => { void setBackground(input.value).then(refresh).catch((error) => report(error, true)); });
+  row.append(document.createTextNode("Custom background colour"), input);
+  body.append(palette, row, button("Use theme background", async () => { await setBackground(null); refresh(); }),
+    control("p", "Use the - and + controls for 75% to 200% card sizes. Fit gives a compact overview. Scroll mode lets you swipe across cards without moving them.", "fine-print"),
+    button("Done", () => closeDialog(), true));
+  refresh();
 }
 async function settingsDialog(): Promise<void> {
   await openDialog("Sound & effects");
@@ -390,10 +483,19 @@ async function helpDialog(): Promise<void> {
     "Draw one card from the left stock. When empty, recycle the waste without shuffling; each recycle costs 100 points.",
     "Drag the exposed waste card or a face-up sequence. The leading card can overlap a destination even when your finger is outside it. Release when the legal destination glows; a rejected drop returns your cards without a penalty.",
     "You can also tap a source and then a destination. Tap the same selected card again to send it to a foundation when legal.",
-    "On a small screen, tap a column's numbered heading to inspect its cards. The Card list below the board supports keyboard play.",
+    "Use - and + to zoom the cards from 75% to 200%. Fit gives a compact overview: all columns across the table, and the full table in landscape. Long portrait columns can still scroll. Your zoom choice is remembered.",
+    "Larger tables scroll in both directions. Turn Scroll on to swipe across cards without moving them; turn it off to drag or tap cards. You can select a card, scroll to its destination, then switch back to place it. Mouse wheels, trackpads and keyboard scrolling also work.",
+    "On a small screen, tap a column's numbered heading to inspect its cards. Card list & keyboard play is also available in the menu. Landscape keeps cards large and lets long columns scroll, with stock and foundations beside the seven columns. Colour changes your table background.",
     "Undo costs 2 points and does not rewind the clock. Hints suggest useful legal moves, not guaranteed winning moves.",
+    "Complete all four foundations from Ace to King to win. Finish game appears when the remaining legal sequence can be completed automatically. Manual wins and Auto-finish both show a five-second fireworks celebration and your score; View table / skip closes it.",
   ].forEach((text) => rules.append(control("li", text)));
-  body.append(rules, control("h3", "Classic-style Standard scoring"));
+  body.append(rules, control("h3", "Your table, sound and accessibility"));
+  body.append(control("p", "Colour opens presets and a custom background picker. Your colour and zoom are saved locally and survive theme changes. Use theme background restores the active theme's colour. Pile labels adapt to light and dark surfaces."));
+  body.append(control("p", "Menu > Sound & effects has music and card-sound volumes, Mute everything, and Reduce visual effects. Reduced effects replace fireworks with a static celebration. Reopening a completed game does not replay fireworks or award another bonus."));
+  body.append(control("p", "For keyboard play, open Card list & keyboard play and use Tab and Enter. H requests a hint, P pauses or resumes, Ctrl+Z / Cmd+Z undoes, and Escape cancels a selection or closes a dialog."));
+  body.append(control("h3", "Pause, restart and history"));
+  body.append(control("p", "Pause stops the timer and saves your place; use Resume game when you return. Reset, or Restart this deal in the menu, starts the same deal again. New game chooses another deal and difficulty. Game history in the menu keeps the latest 500 completed, restarted or abandoned attempts."));
+  body.append(control("h3", "Classic-style Standard scoring"));
   body.append(control("p", "Waste to tableau +5; to a foundation +10; reveal a hidden card +5; foundation back to tableau -15. Other moves and draws score 0. Every 10 active seconds costs 2 points."));
   body.append(control("p", "Displayed playing score never falls below zero; negative internal totals must be earned back. Undo restores the previous action score and keeps all time/Undo deductions. Victory adds floor(700,000 / active seconds) if the game took more than 30 whole seconds."));
   body.append(control("h3", "Offline and privacy"));
@@ -409,11 +511,13 @@ async function aboutDialog(): Promise<void> {
   await openDialog("About Mangoidiots Solitaire");
   if (!dialog.open) return;
   body.append(brandLogo(), control("p", "Draw 1 Klondike, with original art and instrumental music inspired by India's historical courts. Choose Chola or Mughal Gardens in the Theme collection."));
+  body.append(control("p", "Version 1.3.0 brings sharper cards and pile labels, scrollable mobile tables, saved 75%-200% card zoom with a Fit overview, and your choice of background colour. Wins celebrate with visible fireworks; reduced effects offer a quieter static celebration."));
+  body.append(control("p", "Play Easy, Medium, or Difficult deals with hints, Undo, a timer, and automatic finishing when available. Pause and resume your game, and revisit the latest 500 attempts in Game history."));
   const attribution = control("p", "Generated with OpenAI GPT-6 Astra. Play for free at ");
   const link = control("a", "solitaire.mangoidiots.com");
   link.href = "https://solitaire.mangoidiots.com/";
   attribution.append(link, document.createTextNode(".")); body.append(attribution);
-  body.append(control("p", "Version 1.2.0. Free to play, with no account or progress uploads. After the first complete download, your game and downloaded themes work offline. Saves stay in this browser; cloud sync is not included.", "fine-print"));
+  body.append(control("p", "Free to play on GitHub Pages, with no account, analytics, advertising, or progress uploads. After the first complete download, your game and downloaded themes work offline. Progress, zoom, colour and other preferences stay in this browser; cloud sync is not included.", "fine-print"));
   body.append(control("p", "An independent game, not affiliated with Microsoft. Artwork and synthesized music are creative interpretations, not historical portraits or recordings.", "fine-print"));
 }
 async function themesDialog(): Promise<void> {
@@ -454,11 +558,15 @@ async function inspectColumn(column: number): Promise<void> {
   });
   body.append(grid);
 }
-function showVictory(): void {
+function showVictory(animate = false): void {
+  if (keyboardDialog.open) keyboardDialog.close();
   if (dialog.open) closeDialog(false);
   resumeAfterDialog = false; body.replaceChildren();
   element("dialog-title").textContent = "A royal victory.";
-  body.append(control("div", "\u2726", "win-emblem"), control("div", (playingScore(current) + current.bonus).toLocaleString("en-US"), "win-score"));
+  const celebration = control("div");
+  body.append(celebration);
+  if (!animate) body.append(control("div", "\u2726", "win-emblem"));
+  body.append(control("div", (playingScore(current) + current.bonus).toLocaleString("en-US"), "win-score"));
   const breakdown = control("div", undefined, "score-breakdown");
   for (const [name, value] of [["Playing score", playingScore(current)], ["Time bonus", current.bonus], ["Active time", formatTime(current.elapsedMs)]]) {
     const item = control("div", String(name)); item.append(control("strong", String(value))); breakdown.append(item);
@@ -468,6 +576,7 @@ function showVictory(): void {
   actions.append(button("View table / skip", () => { scene.render(current.board); closeDialog(false); }),
     button("Play again", () => begin(current.difficulty), true));
   body.append(actions); dialog.showModal();
+  if (animate) stopCelebration = mountVictoryCelebration(celebration, preferences.reduced);
 }
 async function finish(): Promise<void> {
   if (!allowed()) return;
@@ -483,7 +592,9 @@ async function finish(): Promise<void> {
 }
 function boardOptions(loaded: LoadedTheme): Parameters<typeof createBoard>[1] {
   return {
-    theme: loaded, enabled: allowed, card: selectCard, destination: (pile) => { void destination(pile); },
+    theme: loaded, enabled: () => allowed() && !keyboardDialog.open && !panning,
+    zoom: () => preferences.zoom, background: () => preferences.background ?? loaded.manifest.palette.table,
+    card: selectCard, destination: (pile) => { void destination(pile); },
     stock: () => { void drawCard(); }, inspect: (column) => { void inspectColumn(column); },
     drop: (from, index, to) => { void perform({ type: "move", from, index, to }); },
     dragFeedback: (target) => message(target
@@ -506,12 +617,12 @@ async function changeTheme(listing: ThemeListing): Promise<void> {
     mount = control("div");
     mount.style.position = "absolute"; mount.style.visibility = "hidden";
     mount.style.width = `${element("board").clientWidth}px`;
-    element("board-wrap").append(mount);
+    element("board-viewport").append(mount);
     stagedBoard = await createBoard(mount, boardOptions(stagedTheme));
     const prefs = { ...preferences, theme: stagedTheme.manifest.id, themeVersion: stagedTheme.manifest.version };
     await store.save(current, prefs);
     const previous = theme;
-    boardInstance.resize.disconnect(); boardInstance.game.destroy(true); sound.dispose();
+    boardInstance.dispose(); sound.dispose();
     element("board").replaceWith(mount);
     mount.id = "board"; mount.style.position = ""; mount.style.visibility = ""; mount.style.width = "100%";
     boardInstance = stagedBoard; scene = stagedBoard.scene;
@@ -521,7 +632,7 @@ async function changeTheme(listing: ThemeListing): Promise<void> {
     sound.settings(preferences.music, preferences.effects, preferences.muted);
     disposeTheme(previous); render();
   } catch (error) {
-    stagedBoard?.resize.disconnect(); stagedBoard?.game.destroy(true);
+    stagedBoard?.dispose();
     mount?.remove();
     if (stagedTheme) disposeTheme(stagedTheme);
     report(error);
@@ -577,11 +688,13 @@ async function initialize(): Promise<void> {
     progress("Downloading the offline game...", 8);
     await prepareOffline();
     listings = await themeListings(base);
-    const selected = listings.find((item) => item.id === preferences.theme && item.version === preferences.themeVersion);
-    if (!selected) throw new Error(`Your saved theme "${preferences.theme}" is not available in this site's theme list. Restore the pack before continuing.`);
-    theme = await loadTheme(base, selected, progress);
+    const selectedTheme = await loadPreferredTheme(base, listings, preferences, progress);
+    theme = selectedTheme.theme;
     applyThemeAppearance();
     await connectBoard(theme);
+    const nextPreferences = { ...preferences, themeVersion: theme.manifest.version };
+    if (current && nextPreferences.themeVersion !== preferences.themeVersion) await store.save(current, nextPreferences);
+    preferences = nextPreferences;
     sound = new Sound(theme, message);
     sound.settings(preferences.music, preferences.effects, preferences.muted);
     if (!current) {
@@ -599,6 +712,7 @@ async function initialize(): Promise<void> {
     element("offline-status").textContent = "Ready offline";
     if (current.status === "won") showVictory();
     else if (current.started) message("Your game is saved. Resume when you are ready.");
+    if (selectedTheme.warning) message(selectedTheme.warning);
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error);
     console.error(error); progress(text, 0);
@@ -609,6 +723,7 @@ async function initialize(): Promise<void> {
 function applyThemeAppearance(): void {
   document.documentElement.style.setProperty("--table", theme.manifest.palette.table);
   document.documentElement.style.setProperty("--gold", theme.manifest.palette.accent);
+  document.documentElement.style.setProperty("--board-colour", preferences.background ?? theme.manifest.palette.table);
   document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = theme.manifest.palette.table;
 }
 function action(id: string, callback: () => void | Promise<void>): void {
@@ -622,7 +737,22 @@ action("pause", () => playing ? pause() : resume());
 action("undo", undo); action("hint", hint);
 action("new-game", newGameDialog); action("reset", resetDialog); action("menu", menuDialog); action("finish", finish);
 action("themes", themesDialog);
+action("table-settings", tableSettingsDialog);
+action("zoom-in", () => zoomBy(1));
+action("zoom-out", () => zoomBy(-1));
+action("zoom-fit", () => setZoom(0));
+action("pan-table", () => {
+  if (busy || failed) return;
+  panning = !panning; render();
+  message(panning ? "Scroll mode: swipe the table without moving cards. Turn Scroll off to play." : "Card mode: drag cards, or tap a source and its destination.");
+});
 action("dialog-close", () => closeDialog());
+action("keyboard-close", () => keyboardDialog.close());
+keyboardDialog.addEventListener("close", () => {
+  const panel = element<HTMLDetailsElement>("accessible-panel");
+  panel.open = false; document.querySelector("main")!.append(panel);
+  element("menu").focus({ preventScroll: true });
+});
 action("retry-load", () => location.reload());
 action("mute", async () => {
   if (!sound || busy || failed) return;
@@ -645,7 +775,10 @@ document.addEventListener("visibilitychange", () => {
     if (current && playing) void pause();
   }
 });
-window.addEventListener("pagehide", () => { if (current) { current.elapsedMs = elapsed(); playing = false; sound?.pause(); void store?.save(current, preferences).catch(console.error); } });
+window.addEventListener("pagehide", () => {
+  stopCelebration?.(); stopCelebration = undefined;
+  if (current) { current.elapsedMs = elapsed(); playing = false; sound?.pause(); void store?.save(current, preferences).catch(console.error); }
+});
 window.addEventListener("pageshow", (event) => { if (event.persisted) location.reload(); });
 setInterval(() => {
   if (!current || !loading.hidden || failed) return;

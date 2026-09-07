@@ -9,7 +9,8 @@
   </defs>
     <rect x="1" y="1" width="238" height="334" rx="15" fill="url(#paper)" stroke="#c5a96a" stroke-width="2"/>
     <rect x="7" y="7" width="226" height="322" rx="11" fill="none" stroke="#d5bc82" stroke-width=".65"/>
-    <path d="M49 283V111Q49 70 81 58L120 42L159 58Q191 70 191 111V283Z" fill="url(#arch)" stroke="url(#metal)" stroke-width="3"/>
+    
+    <g id="card-art"><path d="M49 283V111Q49 70 81 58L120 42L159 58Q191 70 191 111V283Z" fill="url(#arch)" stroke="url(#metal)" stroke-width="3"/>
     <circle cx="120" cy="127" r="73" fill="url(#halo)" />
     <g opacity=".19"><g transform="translate(156 201) scale(0.8)" fill="#fff3c1">
     <path d="M-60 0H60V-9H48V-22H41V-35H34V-47H27V-59H20V-70H13V-80H8V-87H-8V-80H-13V-70H-20V-59H-27V-47H-34V-35H-41V-22H-48V-9H-60Z"/>
@@ -66,5 +67,10 @@
     <circle cx="144.00" cy="108.00" r="1.8" fill="#f6dea0" /><circle cx="143.54" cy="110.34" r="1.8" fill="#f6dea0" /><circle cx="142.17" cy="112.59" r="1.8" fill="#f6dea0" /><circle cx="139.96" cy="114.67" r="1.8" fill="#f6dea0" /><circle cx="136.97" cy="116.49" r="1.8" fill="#f6dea0" /><circle cx="133.33" cy="117.98" r="1.8" fill="#f6dea0" /><circle cx="129.18" cy="119.09" r="1.8" fill="#f6dea0" /><circle cx="124.68" cy="119.77" r="1.8" fill="#f6dea0" /><circle cx="120.00" cy="120.00" r="1.8" fill="#f6dea0" /><circle cx="115.32" cy="119.77" r="1.8" fill="#f6dea0" /><circle cx="110.82" cy="119.09" r="1.8" fill="#f6dea0" /><circle cx="106.67" cy="117.98" r="1.8" fill="#f6dea0" /><circle cx="103.03" cy="116.49" r="1.8" fill="#f6dea0" /><circle cx="100.04" cy="114.67" r="1.8" fill="#f6dea0" /><circle cx="97.83" cy="112.59" r="1.8" fill="#f6dea0" /><circle cx="96.46" cy="110.34" r="1.8" fill="#f6dea0" /><circle cx="96.00" cy="108.00" r="1.8" fill="#f6dea0" />
     <path d="M120 109L116 121L120 128L124 121Z" fill="url(#metal)" /><circle cx="120" cy="121" r="2" fill="#b52b43" />
     <path d="M55 288Q120 279 185 288L181 307Q120 299 59 307Z" fill="#f4e1b1" stroke="#c69948" stroke-width=".8"/>
-    <text x="120" y="297" text-anchor="middle" fill="#5e452c" font-family="Georgia,serif" font-size="8.5" font-weight="bold" letter-spacing=".9">LOTUS COURT</text><text x="28" y="39" text-anchor="middle" fill="#182d34" font-family="Georgia,serif" font-weight="bold" font-size="37">Q</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#182d34" /></g><g transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#182d34" font-family="Georgia,serif" font-weight="bold" font-size="37">Q</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#182d34" /></g></g>
+    <text x="120" y="297" text-anchor="middle" fill="#5e452c" font-family="Georgia,serif" font-size="8.5" font-weight="bold" letter-spacing=".9">LOTUS COURT</text></g>
+    <g id="primary-index">
+      <text id="index-rank" x="34" y="52" text-anchor="middle" fill="#182d34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="48">Q</text>
+      <g id="index-suit"><g transform="translate(34 75) rotate(0) scale(0.7619047619047619)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#182d34" /></g></g>
+    </g>
+    <g id="secondary-index" transform="rotate(180 120 168)"><text x="28" y="39" text-anchor="middle" fill="#182d34" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="37">Q</text><g transform="translate(28 57) rotate(0) scale(0.5714285714285714)"><path d="M0-17C-6-9-17-4-17 5C-17 15-5 18 0 9C5 18 17 15 17 5C17-4 6-9 0-17ZM-3 8L-7 21H7L3 8Z" fill="#182d34" /></g></g>
   </svg>

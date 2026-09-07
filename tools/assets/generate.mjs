@@ -24,10 +24,14 @@ async function add(path, mime, data) {
 
 await mkdir(generated, { recursive: true });
 const cards = {};
+const compactCards = {};
 for (let card = 0; card < 52; card++) {
   const path = `cards/${card}.svg`;
   await add(path, "image/svg+xml", cardSvg(card));
   cards[String(card)] = path;
+  const compactPath = `cards/compact-${card}.svg`;
+  await add(compactPath, "image/svg+xml", cardSvg(card, true));
+  compactCards[String(card)] = compactPath;
 }
 await add("table/card-back.svg", "image/svg+xml", backSvg());
 await add("table/courtyard.svg", "image/svg+xml", backgroundSvg());
@@ -42,12 +46,13 @@ const attribution = "Original procedural vector artwork and original synthesized
 const manifest = {
   schemaVersion: 1,
   id: "chola",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Chola Royal Court",
   description: "Jewel-toned original royal-court illustrations, parchment cards, bronze-gold geometry, a quiet courtyard table, and gentle instrument-inspired synthesized sound.",
   author: "Mangoidiots Solitaire · original work with GitHub Copilot assistance",
   files,
   cards,
+  compactCards,
   back: "table/card-back.svg",
   background: "table/courtyard.svg",
   audio,
@@ -75,7 +80,7 @@ const html = `<!doctype html>
 @media(max-width:600px){header,main,footer{padding:20px}.board{padding:15px}.cards{gap:12px}.court{grid-template-columns:repeat(2,minmax(100px,1fr))}}
 </style></head><body>
 <header><div class="eyebrow">Original art · locally rendered audio · offline ready</div><h1>Chola Royal Court</h1>
-<p>A royal-court daydream in peacock blue, emerald, ruby and bronze. Fifty-two complete vector faces, twelve illustrated court characters, a geometric card back, and an understated courtyard table.</p>
+<p>A royal-court daydream in peacock blue, emerald, ruby and bronze. Fifty-two complete vector faces in standard and compact variants, twelve illustrated court characters, a geometric card back, and an understated courtyard table.</p>
 <p class="note">An imaginative Chola-inspired interpretation, not authenticated portraits. Synthesized instrument-inspired music, not a professional Carnatic performance.</p></header>
 <main><section class="board"><div class="cards">
 ${card(0, "Ace of spades")}${card(22, "Ten of hearts")}${card(38, "King of clubs")}${card(24, "Queen of hearts · veena")}${card(49, "Jack of diamonds · captain")}
@@ -83,7 +88,8 @@ ${card(0, "Ace of spades")}${card(22, "Ten of hearts")}${card(38, "King of clubs
 <div class="swatches"><span style="background:#197380">Peacock blue</span><span style="background:#9e294b">Ruby</span><span style="background:#237653">Emerald</span><span style="background:#624794">Amethyst</span><span style="background:#e8bd63;color:#352c23">Bronze gold</span><span style="background:#fff8e6;color:#352c23">Parchment</span></div>
 <h2>The imagined royal court</h2><p>Kings hold a lotus sceptre and a temple model, sealed document, palm-leaf record, or model ship. Court women carry a lotus, play a veena-inspired instrument, tend a festival lamp, or hold a manuscript. Commanders bear a spear, bow, polearm, or sword with ornamental shields. Costume details and stepped temple forms are stylized inventions.</p>
 <section class="board cards court">${[12,25,38,51,11,24,37,50,10,23,36,49].map(id => card(id, `${["Spades","Hearts","Clubs","Diamonds"][Math.floor(id/13)]} · ${["Jack","Queen","King"][id%13-10]}`)).join("")}</section>
-<h2>Small-card legibility</h2><p>58-pixel-wide samples: dark spades/clubs, red hearts/diamonds, conventional rank and suit indices at both corners.</p><div class="mobile-cards">${[0,9,10,11,12,13,22,23,24,25,26,35,39,48].map(id=>`<img src="../themes/chola/${cards[id]}" alt="Card ${id} at mobile scale" width="58" height="81">`).join("")}</div>
+<h2>Small-card legibility</h2><p>Compact faces keep the original artwork below a clear horizontal rank-and-suit strip. An 86-unit bold rank is nominally 14⅓ CSS pixels at 40-pixel card width; expose the full 86-unit strip (14⅓ pixels at that width), fitting a card-width × 0.36 overlap step. Ranks share baseline 77, including tens; the 64-unit suit is centered at y=44. Original artwork begins near y=90. Standard faces retain stacked corner indices with a declared 92-unit exposed height (card-width × 92/240).</p>
+${[40,58,70].map(width => `<h3>${width}-pixel-wide compact cards</h3><div class="mobile-cards">${[0,9,10,11,12,13,22,23,24,25,26,35,39,48].map(id=>`<img src="../themes/chola/${compactCards[id]}" alt="Card ${id} at ${width}-pixel mobile scale" style="width:${width}px" width="${width}" height="${width * 1.4}">`).join("")}</div>`).join("")}
 <h2>Original sound palette</h2><p>Rendered PCM16 mono WAV at ${SAMPLE_RATE.toLocaleString("en-US")} Hz. Soft plucked-string tones, breath-shaped flute synthesis, and tuned percussion support a restrained original modal loop. Playback is opt-in here; nothing autoplays.</p><div class="sounds">${audioPreview}</div>
 <h2>All fifty-two cards</h2><section class="board cards">${Array.from({length:52}, (_,id)=>card(id, `${["A","2","3","4","5","6","7","8","9","10","J","Q","K"][id%13]} of ${["spades","hearts","clubs","diamonds"][Math.floor(id/13)]}`)).join("")}</section>
 <p><a href="./chola-pack.zip" download>Download the verified theme ZIP</a> · ${(zipped.byteLength / 1024 / 1024).toFixed(2)} MiB</p></main><footer>${attribution}</footer></body></html>`;
@@ -105,6 +111,6 @@ for (const file of readManifest.files) {
     }
   }
 }
-console.log(`Generated and verified ${files.length} media assets and ${Object.keys(cards).length} card faces.`);
+console.log(`Generated and verified ${files.length} media assets: ${Object.keys(cards).length} standard and ${Object.keys(compactCards).length} compact card faces, back, background, six WAVs.`);
 console.log(`ZIP: generated/chola-pack.zip (${zipped.byteLength.toLocaleString("en-US")} bytes, SHA-256 ${hash(zipped)})`);
 console.log("Preview: generated/chola-preview.html");

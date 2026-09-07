@@ -1,6 +1,7 @@
 import { validateBoard, isWon, type Board } from "./game/engine.ts";
 import type { Difficulty } from "./data/deals";
 import { gameStorageKey } from "./identity.ts";
+import { validZoom, validColour } from "./table-appearance.ts";
 
 export interface Snapshot { board: Board; movePoints: number }
 export interface Attempt {
@@ -30,6 +31,8 @@ export interface Preferences {
   difficulty: Difficulty;
   theme: string;
   themeVersion: string;
+  zoom: number;
+  background: string | null;
   seen: Record<Difficulty, string[]>;
 }
 export interface HistoryEntry {
@@ -41,7 +44,8 @@ export interface HistoryEntry {
 export const defaults = (): Preferences => ({
   music: .18, effects: .65, muted: false,
   reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
-  difficulty: "Easy", theme: "chola", themeVersion: "1.0.0", seen: { Easy: [], Medium: [], Difficult: [] },
+  difficulty: "Easy", theme: "chola", themeVersion: "1.1.0", zoom: 1, background: null,
+  seen: { Easy: [], Medium: [], Difficult: [] },
 });
 const difficulty = (value: unknown): value is Difficulty => ["Easy", "Medium", "Difficult"].includes(String(value));
 function object(value: unknown): Record<string, unknown> {
@@ -93,11 +97,14 @@ function preferences(value: unknown): Preferences {
   if (!difficulty(v.difficulty)) throw new Error("Saved difficulty is invalid.");
   const music = number(v.music), effects = number(v.effects);
   if (music > 1 || effects > 1) throw new Error("Saved sound volume is invalid.");
+  const zoom = v.zoom === undefined ? 1 : v.zoom;
+  const background = v.background === undefined ? null : v.background;
+  if (!validZoom(zoom) || (background !== null && !validColour(background))) throw new Error("Saved table appearance is invalid.");
   const validateSeen = (key: Difficulty): string[] => {
     if (!Array.isArray(seen[key]) || !seen[key].every((item: unknown) => typeof item === "string")) throw new Error("Saved deal selection is invalid.");
     return seen[key] as string[];
   };
-  return { music, effects, muted: boolean(v.muted), reduced: boolean(v.reduced), difficulty: v.difficulty,
+  return { music, effects, muted: boolean(v.muted), reduced: boolean(v.reduced), difficulty: v.difficulty, zoom, background,
     theme: text(v.theme), themeVersion: text(v.themeVersion), seen: { Easy: validateSeen("Easy"), Medium: validateSeen("Medium"), Difficult: validateSeen("Difficult") } };
 }
 export function playingScore(attempt: Attempt, elapsed = attempt.elapsedMs): number {

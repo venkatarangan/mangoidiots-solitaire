@@ -29,6 +29,26 @@ export function suitShape(suit, x, y, size, color, rotate = 0) {
   return `<g transform="translate(${x} ${y}) rotate(${rotate}) scale(${size / 42})">${path(d, color)}</g>`;
 }
 
+export const CARD_FACE_METRICS = {
+  standard: { rankFontSize: 48, exposedIndexHeight: 92 },
+  compact: { rankFontSize: 86, exposedIndexHeight: 86 },
+};
+
+export function cardIndex(suit, rank, color, compact = false) {
+  const label = ({ 1: "A", 11: "J", 12: "Q", 13: "K" })[rank] ?? String(rank);
+  const metrics = CARD_FACE_METRICS[compact ? "compact" : "standard"];
+  // Painted glyphs fit inside these strips; a font's line box includes unused descent space.
+  return compact
+    ? `<g id="primary-index">
+      <text id="index-rank" x="14" y="77" fill="${color}" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${metrics.rankFontSize}"${rank === 10 ? ' textLength="98" lengthAdjust="spacingAndGlyphs"' : ""}>${label}</text>
+      <g id="index-suit">${suitShape(suit, 181, 44, 64, color)}</g>
+    </g>`
+    : `<g id="primary-index">
+      <text id="index-rank" x="34" y="52" text-anchor="middle" fill="${color}" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${metrics.rankFontSize}"${rank === 10 ? ' textLength="52" lengthAdjust="spacingAndGlyphs"' : ""}>${label}</text>
+      <g id="index-suit">${suitShape(suit, 34, 75, 32, color)}</g>
+    </g>`;
+}
+
 function lotus(x, y, size, petal = "#d6ae57", center = "#f6df9d") {
   return `<g transform="translate(${x} ${y}) scale(${size / 40})">
     ${path("M0 13C-16 12-24-1-21-13C-10-10-3-4 0 13Z", petal)}
@@ -232,12 +252,12 @@ const pipPositions = {
   10: [[82, 75], [158, 75], [120, 104], [82, 137], [158, 137], [82, 199], [158, 199], [120, 232], [82, 261], [158, 261]],
 };
 
-export function cardSvg(card) {
+export function cardSvg(card, compact = false) {
   const suit = Math.floor(card / 13);
   const rank = card % 13 + 1;
   const s = suits[suit];
   const label = ({ 1: "A", 11: "J", 12: "Q", 13: "K" })[rank] ?? String(rank);
-  const index = `<text x="28" y="39" text-anchor="middle" fill="${s.ink}" font-family="Georgia,serif" font-weight="bold" font-size="${rank === 10 ? 30 : 37}">${label}</text>${suitShape(suit, 28, 57, 24, s.ink)}`;
+  const secondaryIndex = `<text x="28" y="39" text-anchor="middle" fill="${s.ink}" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${rank === 10 ? 30 : 37}">${label}</text>${suitShape(suit, 28, 57, 24, s.ink)}`;
   let center;
   if (rank >= 11) center = court(suit, rank);
   else if (rank === 1) {
@@ -256,7 +276,10 @@ export function cardSvg(card) {
     <title>${label} of ${s.name}</title>${definitions(s)}
     <rect x="1" y="1" width="238" height="334" rx="15" fill="url(#paper)" stroke="#c5a96a" stroke-width="2"/>
     <rect x="7" y="7" width="226" height="322" rx="11" fill="none" stroke="#d5bc82" stroke-width=".65"/>
-    ${center}${index}<g transform="rotate(180 120 168)">${index}</g>
+    ${compact ? '<path d="M12 85H228" fill="none" stroke="#c5a96a" stroke-width="1"/>' : ""}
+    <g id="card-art"${compact ? ' transform="translate(0 54) scale(1 .86)"' : ""}>${center}</g>
+    ${cardIndex(suit, rank, s.ink, compact)}
+    ${compact ? "" : `<g id="secondary-index" transform="rotate(180 120 168)">${secondaryIndex}</g>`}
   </svg>`;
 }
 
