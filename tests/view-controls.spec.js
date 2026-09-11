@@ -91,13 +91,14 @@ test("touch Scroll mode pans across cards without changing the game", async ({ p
   } finally { await cdp.detach(); }
 });
 
-test("native card controls do not click through to the clipped portion of a tall canvas", async ({ page }) => {
+test("laptop native card controls do not click through to the clipped portion of a tall canvas", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 700 });
   await loaded(page);
   await fixture(page, longRun.replace("stock:rest,waste:[]", "stock:rest.filter(c=>c!==13),waste:[13]"));
   await page.locator("#resume").click();
   const before = await readSave(page);
-  await page.locator("#accessible-panel summary").click();
+  await page.locator("#menu").click();
+  await page.getByRole("button", { name: "Card list & keyboard play", exact: true }).click();
   await page.getByRole("button", { name: "Ace of hearts", exact: true }).click();
   await page.getByRole("button", { name: "Place on hearts", exact: true }).click();
   await expect(page.locator("#moves")).toHaveText("1");
@@ -105,6 +106,107 @@ test("native card controls do not click through to the clipped portion of a tall
   expect(after.board.stock).toEqual(before.board.stock);
   expect(after.board.foundations[1]).toEqual([13]);
   expect(after.board.tableau).toEqual(before.board.tableau);
+});
+
+test("laptop numeric zoom scrolls both axes with accurate rail-offset drag targets and stable height", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 600 });
+  await loaded(page);
+  await fixture(page, longRun.replace("stock:rest,waste:[]", "stock:rest.filter(c=>c!==13),waste:[13]"));
+  await page.locator("#resume").click();
+  const before = await readSave(page);
+  const viewport = page.locator("#board-viewport");
+  const viewportHeight = await viewport.evaluate(v => v.clientHeight);
+  const natural = await layout(page);
+  for (const zoom of ["125%", "150%"]) {
+    await page.locator("#zoom-in").click();
+    await expect(page.locator("#zoom-level")).toHaveText(zoom);
+  }
+  expect((await layout(page)).width).toBeCloseTo(natural.width * 1.5);
+  await viewport.evaluate(v => v.scrollTo(40, 100));
+  await expect.poll(() => viewport.evaluate(v => [v.scrollLeft, v.scrollTop])).toEqual([40, 100]);
+  const l = await layout(page);
+  const source = l.piles.waste, target = l.piles.f1;
+  await page.mouse.move(source.x + l.width * .8, source.y + l.height * .85);
+  await page.mouse.down();
+  await page.mouse.move(target.x + l.width * .8, target.y + l.height * .85, { steps: 12 });
+  await expect(page.locator("#message")).toHaveText("Release to place on the hearts foundation.");
+  await page.mouse.up();
+  await expect.poll(async () => (await readSave(page)).board.foundations[1]).toEqual([13]);
+  expect(await viewport.evaluate(v => v.clientHeight)).toBe(viewportHeight);
+  await page.locator("#undo").click();
+  expect((await readSave(page)).board).toEqual(before.board);
+  await viewport.evaluate(v => v.scrollTo(0, v.scrollHeight));
+  const bottom = await layout(page);
+  const bounds = await viewport.boundingBox();
+  expect(bottom.box.y + bottom.geometry.columns[0].cardY.at(-1) + bottom.height).toBeLessThanOrEqual(bounds.y + bounds.height);
+  await page.locator("#zoom-fit").click();
+  await expect.poll(() => viewport.evaluate(v => [v.scrollLeft, v.scrollTop, v.scrollHeight - v.clientHeight])).toEqual([0, 0, 0]);
+  expect(await viewport.evaluate(v => v.clientHeight)).toBe(viewportHeight);
+  // A height-only resize must cancel a drag even when numeric canvas extents stay unchanged.
+  await page.locator("#zoom-in").click();
+  const held = await layout(page);
+  await page.mouse.move(held.piles.waste.x + held.width / 2, held.piles.waste.y + held.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(held.piles.f1.x + held.width / 2, held.piles.f1.y + held.height / 2, { steps: 12 });
+  await expect(page.locator("#message")).toHaveText("Release to place on the hearts foundation.");
+  await page.setViewportSize({ width: 1024, height: 620 });
+  await expect.poll(() => viewport.evaluate(v => v.clientHeight)).not.toBe(viewportHeight);
+  await page.mouse.up();
+  expect((await readSave(page)).board).toEqual(before.board);
+});
+
+test("laptop responsive boundaries preserve portrait controls and short-landscape piles", async ({ page }) => {
+  await start(page);
+  await page.locator("#zoom-fit").click();
+  for (const [width, height, laptop, side] of [
+    [999,650,false,false], [1000,650,true,false], [1001,650,true,false],
+    [1280,499,false,true], [1280,500,false,true], [1280,501,true,false],
+    [1280,799,true,false], [1280,800,true,false], [1280,801,false,false],
+    [1093,520,true,false], [1024,533,true,false],
+    [1920,1080,false,false], [390,700,false,false], [932,430,false,true],
+  ]) {
+    await page.setViewportSize({ width, height });
+    await expect.poll(() => page.locator("html").evaluate(e => e.classList.contains("laptop-play"))).toBe(laptop);
+    await expect.poll(async () => (await layout(page)).geometry.side).toBe(side);
+    expect(await page.locator("#zoom-fit").count()).toBe(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const display = await page.locator(".view-controls").boundingBox();
+    const board = await page.locator("#board-viewport").boundingBox();
+    if (laptop) {
+      expect(display.x + display.width).toBeLessThanOrEqual(board.x);
+      expect(display.y).toBeCloseTo(board.y);
+    } else {
+      expect(display.y + display.height).toBeLessThanOrEqual(board.y);
+    }
+  }
+});
+
+test("laptop status and errors reserve space without covering cards or essential actions", async ({ page }) => {
+  await page.setViewportSize({ width: 1000, height: 501 });
+  await loaded(page); await fixture(page, longRun); await page.locator("#resume").click();
+  await page.locator("#zoom-fit").click();
+  const viewport = page.locator("#board-viewport");
+  const originalHeight = await viewport.evaluate(v => v.clientHeight);
+  await page.evaluate(() => {
+    const error = document.getElementById("error");
+    error.hidden = false;
+    error.textContent = "Test storage warning. ".repeat(60);
+    document.getElementById("message").textContent = "Test status remains available. ".repeat(20);
+  });
+  await expect.poll(async () => (await layout(page)).geometry.height).toBeLessThan(originalHeight);
+  const geometry = await layout(page);
+  const table = await viewport.boundingBox(), error = await page.locator("#error").boundingBox();
+  const status = await page.locator("#message").boundingBox(), actions = await page.locator(".toolbar").boundingBox();
+  expect(table.y + table.height).toBeLessThanOrEqual(status.y);
+  expect(status.y + status.height).toBeLessThanOrEqual(error.y);
+  expect(error.y + error.height).toBeLessThanOrEqual(actions.y);
+  expect(actions.y + actions.height).toBeLessThanOrEqual(501);
+  expect(geometry.geometry.columns[0].cardY.at(-1) + geometry.height + 12).toBeLessThanOrEqual(table.height + .001);
+  expect(await page.locator("#error").evaluate(e => e.scrollHeight > e.clientHeight)).toBe(true);
+  await page.locator("#error").evaluate(e => e.scrollTop = e.scrollHeight);
+  expect(await page.locator("#error").evaluate(e => e.scrollTop)).toBeGreaterThan(0);
+  await expect(page.locator("#error")).toHaveAttribute("role", "alert");
+  await expect(page.locator("#message")).toHaveAttribute("role", "status");
 });
 
 test("zoom and custom background persist offline and survive a theme change", async ({ page, context }) => {

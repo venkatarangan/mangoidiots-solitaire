@@ -6,8 +6,8 @@ Mangoidiots Solitaire is a colourful, offline-first Draw 1 Klondike game for
 phones, tablets, and desktop browsers. It combines familiar solitaire rules
 with original Indian-history-inspired visual and musical themes.
 
-- **Application version:** 1.3.1
-- **Previous working release:** 1.2.0, commit `f0ef819`
+- **Application version:** 1.3.2
+- **Previous working release:** 1.3.1, commit `88b289a`
 - **Hosting:** GitHub Pages
 - **Production URL:** <https://solitaire.mangoidiots.com/>
 
@@ -93,7 +93,23 @@ branding, source code, or proprietary deal collection.
 - Short landscape uses a side area for stock, waste, and foundations. Long runs
   retain large indices and scroll instead of being squeezed into the height.
 - Visible zoom controls provide 75%, 100%, 125%, 150%, 175%, 200%, and Fit.
-  Fit includes the complete landscape table; portrait can still scroll long runs.
+  Fit includes the complete wide laptop/desktop and short-landscape table,
+  shrinking cards when necessary. Portrait Fit remains width-only and can still
+  scroll long runs. Numeric zoom preserves its requested scale and default 100%.
+- Wide, short laptops (width >= 1000 CSS pixels, height > 500 and <= 800) use
+  one 68-pixel left display rail, a shorter header, compact caption, and bottom
+  essential actions. Every display/action button remains at least 44 x 44 pixels.
+  Stock/waste/foundations stay above the seven columns; height constraints do not
+  implicitly change the pile arrangement.
+- A bounded laptop grid allocates remaining viewport height independently of
+  canvas content; status and scrollable errors occupy their own rows, never
+  covering cards. Secondary information and keyboard controls remain in the menu.
+  Taller desktops keep the horizontal display row and use the bounded table
+  height for Fit; phone-width layouts never acquire the laptop rail.
+- Shared drawing/hit-test geometry includes labels, card tails and bottom
+  padding. Fit preserves proportional exposed rank/suit strips and selects
+  compact art based on Fit's final card size. Deep hidden stacks compress before
+  the complete overview shrinks; moves cannot cause a content/viewport resize loop.
 - Scroll mode uses one-finger swipes over cards without moving them. Turning it
   off restores card drag/tap interactions. Selected cards survive scrolling.
 - Zoom and a preset/custom colour persist locally, including across theme
@@ -184,6 +200,18 @@ A release is ready only when:
 10. Both themes pass Fit containment, scroll/zoom, background persistence,
     large-index, rotation, victory, and old-theme upgrade coverage. Browser
     emulation is distinguished from physical-device review.
+11. Laptop coverage includes 1024 x 600, 1280 x 600, 1280 x 720, 1366 x 650,
+    1440 x 750 and 1536 x 800 CSS pixels with DPR 1/2, thresholds near widths
+    of 1000 and heights of 500/800, and a 1920 x 1080 desktop. The 1366 x 650
+    table recovers at least the old 52-pixel display row without hiding essential
+    actions. Initial deals, mixed positions, deep backs and 13-card runs fit
+    fully at scroll zero. Numeric zoom reaches the last card and both-axis
+    scrolled drag targets stay accurate.
+12. Phone portrait widths 320/375/390/430 and landscape 667 x 300, 780 x 320,
+    844 x 390 and 932 x 430 retain readable default indices and DPR 2/3 support.
+    Browser zoom is evaluated through equivalent reduced CSS viewport sizes,
+    not physical screen dimensions. CI retains existing mobile checks and adds
+    a bounded laptop selection.
 
 ## Deferred work
 

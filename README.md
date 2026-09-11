@@ -8,7 +8,17 @@ remote progress tracking.
 
 Play at <https://solitaire.mangoidiots.com/>.
 
-## What's new in 1.3.1
+## What's new in 1.3.2
+
+Wide, short laptop windows now use a slim **left display rail**, a shorter
+header and bottom game actions, leaving more height for cards. **Fit** shows
+the complete laptop/desktop table, including long columns, shrinking cards
+when necessary. Numeric zoom keeps its requested size and scrolls instead.
+Phone portrait and short-landscape controls remain familiar; stock and
+foundations stay above the columns on laptops. Saves, preferences and both
+1.1.0 theme packs are unchanged.
+
+### Whole-app colour and menu improvements introduced in 1.3.1
 
 **Colour** now applies one background across the entire app and playing area,
 with contrasting text and controls. The menu includes the Mangoidiots logo and
@@ -36,6 +46,7 @@ when you win. Existing games and Undo history are preserved.
 - Responsive phone, tablet, landscape, and desktop layouts
 - Large-index card faces on phones and high-density table rendering
 - Scrollable landscape play with readable cards, zoom controls, and a Fit overview
+- Height-aware laptop/desktop Fit and compact laptop display controls
 - Saved table background colours and visible victory fireworks
 - Visible underlying foundation and waste cards while dragging
 - Chola Royal Court and Mughal Gardens themes
@@ -83,8 +94,16 @@ Pause, and Themes remain within reach. Help, attribution, deal
 details, and **Card list & keyboard play** are available in the menu. Hidden
 stacks overlap more tightly without revealing their identities.
 
-Use **- / +** for 75%-200% card sizes, or **Fit** for a compact overview.
-Zoom is saved locally. Use **Scroll** to swipe across the table without dragging
+On wide laptops (at least 1000 CSS pixels wide, over 500 and up to 800 pixels
+high), display controls sit in a 68-pixel left rail. Essential actions remain
+below the table; the keyboard list, New game, Restart and attribution are
+available through the menu. Taller desktops keep the spacious control row.
+
+Use **- / +** for readable 75%-200% card sizes with scrolling, or **Fit** for a
+full-table overview on wide laptops, desktops and short landscape screens.
+Fit may shrink long runs; portrait Fit remains width-only, so long portrait
+columns can still scroll. Zoom is saved locally and defaults to 100%.
+Use **Scroll** to swipe across the table without dragging
 cards, then turn it off to move cards. A selected card stays selected while
 scrolling, so tap-to-move also works between distant piles. Mouse wheels,
 trackpads, scrollbars, and keyboard scrolling remain available.

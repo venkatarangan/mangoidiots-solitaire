@@ -174,6 +174,41 @@ progress { width: min(360px,90vw); height: 7px; accent-color: #e5c78e; margin: 1
 .compact-play dialog { max-height: calc(var(--visible-height, 100dvh) - 16px); padding: 14px; }
 .compact-play .dialog-heading { margin-bottom: 6px; }
 .compact-play .dialog-heading h2 { font-size: 22px; }
+.laptop-play .app-shell {
+  height: var(--visible-height, 100dvh);
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  column-gap: 8px;
+  padding: env(safe-area-inset-top, 0px) max(12px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(12px, env(safe-area-inset-left, 0px));
+}
+.laptop-play .topbar { grid-column: 1 / -1; padding: 4px 0; }
+.laptop-play .brand { font-size: 18px; }
+.laptop-play .brand small { font-size: 8px; }
+.laptop-play .brand-mark { font-size: 28px; }
+.laptop-play .metrics strong { font-size: 22px; }
+.laptop-play .game-caption { grid-column: 1 / -1; margin: 3px 0; }
+.laptop-play .view-controls {
+  grid-area: 3 / 1; flex-direction: column; align-self: start;
+  padding: 4px 2px; gap: 4px;
+}
+.laptop-play .view-controls button { width: 60px; }
+.laptop-play #zoom-level { padding: 2px 0; }
+.laptop-play main {
+  grid-area: 3 / 2; min-height: 0; min-width: 0;
+  display: grid; grid-template-rows: minmax(0, 1fr) auto auto auto;
+}
+.laptop-play #board-wrap { grid-row: 1; }
+.laptop-play #board-viewport { height: 100%; max-height: none; }
+.laptop-play #message {
+  grid-row: 2; min-height: 26px; max-height: 42px; overflow: auto; padding: 5px 4px;
+}
+.laptop-play #error { grid-row: 3; margin: 0; max-height: 72px; overflow: auto; padding: 6px 12px; }
+.laptop-play .toolbar { grid-row: 4; padding: 2px 0 4px; gap: 8px; }
+.laptop-play .toolbar button { min-height: 44px; padding: 6px 14px; }
+.laptop-play .toolbar-divider, .laptop-play .wide-action,
+.laptop-play main > .accessible-board, .laptop-play footer { display: none; }
+.laptop-play .overlay { padding-top: 0; place-items: center; }
 #keyboard-dialog { width: min(980px, calc(100vw - 24px)); }
 #keyboard-dialog .accessible-board { display: block; color: #294438; }
 #keyboard-dialog .pile-list button { color: #294438; border-color: #8a9d86; }

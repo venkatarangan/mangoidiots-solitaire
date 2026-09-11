@@ -9,13 +9,21 @@ export interface TableLayout {
   columns: { labelY: number; cardY: number[]; backStep: number }[];
 }
 
-export function tableLayout(board: Board, width: number, availableHeight?: number, zoom = 0): TableLayout {
+export interface TableConstraints {
+  arrangement?: "above" | "side";
+  availableHeight?: number;
+  zoom?: number;
+}
+
+export function tableLayout(board: Board, width: number, {
+  arrangement = "above", availableHeight, zoom = 0,
+}: TableConstraints = {}): TableLayout {
   if (!Number.isFinite(width) || width <= 0 ||
       (availableHeight !== undefined && (!Number.isFinite(availableHeight) || availableHeight <= 0))) {
     throw new Error("The card table needs finite, positive dimensions.");
   }
   if (!validZoom(zoom)) throw new Error("The card table zoom is invalid.");
-  const side = availableHeight !== undefined;
+  const side = arrangement === "side";
   const gap = side || width < 600 ? 3 : 12;
   const inset = 4;
   const railGap = 18;
@@ -28,15 +36,27 @@ export function tableLayout(board: Board, width: number, availableHeight?: numbe
     return Math.max(...board.tableau.map((pile) => cardHeight + hiddenHeight(pile, cardWidth) +
       Math.max(0, pile.cards.length - pile.faceUp - 1) * step));
   };
+  const isCompact = (cardWidth: number) => side || cardWidth < 85;
+  const contentExtent = (cardWidth: number) => {
+    const cardHeight = cardWidth * 1.4;
+    const tableauTop = side ? columnHeader : 6 + cardHeight + columnHeader;
+    return Math.ceil(Math.max(tableauTop + extent(cardWidth, isCompact(cardWidth)) + 12,
+      side ? columnHeader + 3 * cardHeight + 2 * gap + inset : 0));
+  };
   let cardWidth = Math.min(side ? 78 : 126,
     (width - inset * 2 - gap * (side ? 7 : 6) - (side ? railGap : 0)) / (side ? 9 : 7));
-  const compact = side || cardWidth < 85;
-  if (side && zoom === 0) {
-    // Preserve complete readable strips; reduce the whole card only after compacting backs.
-    const limit = availableHeight!;
-    while (cardWidth > 1 && (columnHeader + extent(cardWidth, true) + inset > limit ||
-      3 * cardWidth * 1.4 + 2 * gap + columnHeader + inset > limit)) cardWidth -= .25;
+  if (availableHeight !== undefined && zoom === 0 && contentExtent(cardWidth) > availableHeight) {
+    // Fit the same complete extents used below, including labels and bottom padding.
+    // Keep exposed strips proportional; only numeric zoom opts into scrolling.
+    let low = 0, high = cardWidth;
+    for (let i = 0; i < 40; i++) {
+      const candidate = (low + high) / 2;
+      if (contentExtent(candidate) <= availableHeight) low = candidate;
+      else high = candidate;
+    }
+    cardWidth = low;
   }
+  const compact = isCompact(cardWidth);
   const cardHeight = cardWidth * 1.4;
   const faceStep = cardWidth * (compact ? .36 : .39);
   const total = cardWidth * (side ? 9 : 7) + gap * (side ? 7 : 6) + (side ? railGap : 0);
@@ -62,9 +82,7 @@ export function tableLayout(board: Board, width: number, availableHeight?: numbe
       Math.max(0, index - pile.faceUp) * faceStep);
     return { labelY: tableauTop - 13, cardY, backStep };
   });
-  const contentHeight = Math.ceil(Math.max(tableauTop + extent(cardWidth, compact) + 12,
-    side ? top + 3 * cardHeight + 2 * gap + inset : 0));
-  const height = side ? (zoom === 0 ? availableHeight! : Math.max(availableHeight!, contentHeight)) : contentHeight;
+  const contentHeight = contentExtent(cardWidth);
   const scale = zoom || 1;
   const surfaceWidth = Math.max(width, width * scale);
   const offset = (surfaceWidth - width * scale) / 2;
@@ -76,7 +94,7 @@ export function tableLayout(board: Board, width: number, availableHeight?: numbe
     column.labelY *= scale; column.backStep *= scale;
     column.cardY = column.cardY.map((y) => y * scale);
   }
-  return { width: surfaceWidth, height: Math.max(availableHeight ?? 0, Math.ceil(height * scale)), side, compact,
+  return { width: surfaceWidth, height: Math.max(availableHeight ?? 0, Math.ceil(contentHeight * scale)), side, compact,
     cardWidth: cardWidth * scale, cardHeight: cardHeight * scale, faceStep: faceStep * scale, piles, columns };
 }
 

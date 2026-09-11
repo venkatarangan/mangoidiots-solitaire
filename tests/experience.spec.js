@@ -228,7 +228,7 @@ test("Mangoidiots branding, logo in organized menu and About/Help, repository li
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "About Mangoidiots Solitaire", exact: true }).click();
   await expect(page.locator("#dialog-body")).toContainText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
-  for (const text of ["Version 1.3.1", "75%-200%", "scrollable mobile tables", "background colour", "fireworks", "GitHub Pages"]) {
+  for (const text of ["Version 1.3.2", "left display rail", "numeric zoom keeps readable scrolling", "Phone portrait", "fireworks", "GitHub Pages"]) {
     await expect(page.locator("#dialog-body")).toContainText(text);
   }
   const repository = page.getByRole("link", { name: "GitHub", exact: true });
@@ -244,7 +244,7 @@ test("Mangoidiots branding, logo in organized menu and About/Help, repository li
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "How to play", exact: true }).click();
   await expect(page.getByAltText("MangoIdiots.com", { exact: true })).toBeVisible();
-  for (const text of ["75% to 200%", "Turn Scroll on", "Long portrait columns can still scroll", "Use theme background", "five-second fireworks", "Reduce visual effects", "Ctrl+Z / Cmd+Z"]) {
+  for (const text of ["75% to 200%", "Turn Scroll on", "long columns can still scroll", "default stays 100%", "Use theme background", "five-second fireworks", "Reduce visual effects", "Ctrl+Z / Cmd+Z"]) {
     await expect(page.locator("#dialog-body")).toContainText(text);
   }
   await page.locator("#dialog-close").click();

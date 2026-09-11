@@ -55,6 +55,7 @@ const views = [
   { width: 667, height: 300, dpr: 3 },
   { width: 780, height: 320, dpr: 2 },
   { width: 844, height: 390, dpr: 3 },
+  { width: 932, height: 430, dpr: 2 },
   { width: 1366, height: 768, dpr: 1 },
   { width: 1920, height: 1080, dpr: 2 },
 ];
@@ -63,7 +64,7 @@ for (const view of views) {
     if (process.env.CI) test.describe.configure({ timeout: 180000 });
     test.use({ viewport: view, deviceScaleFactor: view.dpr, reducedMotion: "reduce" });
     for (const theme of ["chola", "mughal"]) {
-      test(`${view.height <= 390 ? "landscape screen fit" : "readable cards"} ${theme}`, async ({ page }, testInfo) => {
+      test(`${view.height <= 500 ? "landscape screen fit" : "readable cards"} ${theme}`, async ({ page }, testInfo) => {
         await loaded(page);
         if (theme === "mughal") await chooseTheme(page, theme);
         const pause = await page.locator("#resume").boundingBox();
@@ -76,8 +77,8 @@ for (const view of views) {
         const density = await page.locator("#board canvas").evaluate((c) => c.width / c.getBoundingClientRect().width);
         expect(density).toBeGreaterThanOrEqual(Math.min(view.dpr, 2) - .01);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-        if (l.geometry.compact) expect(l.width * 86 / 240).toBeGreaterThanOrEqual(view.height <= 390 ? 12 : 14);
-        if (view.height <= 390) {
+        if (l.geometry.compact) expect(l.width * 86 / 240).toBeGreaterThanOrEqual(view.height <= 500 ? 12 : 14);
+        if (view.height <= 500) {
           await page.locator("#zoom-fit").click();
           await expect(page.locator("#zoom-level")).toHaveText("Fit");
           await assertScreenFit(page);
@@ -94,12 +95,116 @@ for (const view of views) {
         await page.locator("#resume").click();
         await page.locator("#zoom-fit").click();
         await expect(page.locator("#zoom-level")).toHaveText("Fit");
-        if (view.height <= 390) await assertScreenFit(page);
+        if (view.height <= 500) await assertScreenFit(page);
         await page.screenshot({ path: testInfo.outputPath(`${theme}-long-stack.png`), fullPage: true });
         const long = await layout(page);
+        if (view.width >= 1000) {
+          const height = await page.locator("#board-viewport").evaluate(v => v.clientHeight);
+          expect(long.geometry.side).toBe(false);
+          expect(long.geometry.height).toBe(height);
+          expect(long.geometry.columns[0].cardY.at(-1) + long.height + 12).toBeLessThanOrEqual(height + .001);
+        }
         for (const [index, y] of long.geometry.columns[0].cardY.entries()) {
           if (index > 20) expect(y - long.geometry.columns[0].cardY[index - 1]).toBeGreaterThanOrEqual(long.width * .36 - .001);
         }
+
+      });
+    }
+  });
+}
+
+async function assertLaptopFit(page) {
+  const dimensions = await page.evaluate(() => {
+    const viewport = document.querySelector("#board-viewport");
+    const geometry = JSON.parse(document.querySelector("#board canvas").dataset.layout);
+    const rect = (selector) => document.querySelector(selector).getBoundingClientRect().toJSON();
+    return {
+      geometry, width: viewport.clientWidth, height: viewport.clientHeight,
+      scroll: [viewport.scrollLeft, viewport.scrollTop, viewport.scrollWidth - viewport.clientWidth, viewport.scrollHeight - viewport.clientHeight],
+      board: rect("#board-viewport"), rail: rect(".view-controls"),
+      controls: ["#zoom-out", "#zoom-in", "#zoom-fit", "#pan-table", "#table-settings", "#undo", "#hint", "#pause", "#themes", "#mute", "#menu"].map(rect),
+      overflow: document.documentElement.scrollWidth > innerWidth,
+      screenWidth: innerWidth, screenHeight: innerHeight, scrollY,
+    };
+  });
+  const { geometry, width, height } = dimensions;
+  expect(geometry.side).toBe(false);
+  expect(geometry.piles.f0.y + geometry.cardHeight).toBeLessThan(geometry.piles.t0.y);
+  expect(dimensions.scroll).toEqual([0, 0, 0, 0]);
+  expect(dimensions.scrollY).toBe(0);
+  expect(dimensions.overflow).toBe(false);
+  expect(dimensions.rail.x + dimensions.rail.width).toBeLessThanOrEqual(dimensions.board.x);
+  expect(dimensions.rail.y).toBeCloseTo(dimensions.board.y);
+  for (const r of Object.values(geometry.piles)) {
+    expect(r.x).toBeGreaterThanOrEqual(0);
+    expect(r.y).toBeGreaterThanOrEqual(0);
+    expect(r.x + r.width).toBeLessThanOrEqual(width);
+    expect(r.y + r.height).toBeLessThanOrEqual(height);
+  }
+  for (const column of geometry.columns) {
+    expect(column.labelY).toBeGreaterThan(geometry.piles.stock.y + geometry.cardHeight);
+    expect((column.cardY.at(-1) ?? geometry.piles.t0.y) + geometry.cardHeight + 12).toBeLessThanOrEqual(height + .001);
+  }
+  for (const r of dimensions.controls) {
+    expect(r.width).toBeGreaterThanOrEqual(44);
+    expect(r.height).toBeGreaterThanOrEqual(44);
+    expect(r.x).toBeGreaterThanOrEqual(0);
+    expect(r.y).toBeGreaterThanOrEqual(0);
+    expect(r.x + r.width).toBeLessThanOrEqual(dimensions.screenWidth);
+    expect(r.y + r.height).toBeLessThanOrEqual(dimensions.screenHeight);
+  }
+  return dimensions;
+}
+
+for (const [width, height, dpr] of [[1024,600,1], [1280,600,2], [1280,720,1], [1366,650,1], [1440,750,2], [1536,800,2]]) {
+  test.describe(`Laptop ${width}x${height} DPR${dpr}`, () => {
+    test.use({ viewport: { width, height }, deviceScaleFactor: dpr, reducedMotion: "reduce" });
+    if (process.env.CI) test.describe.configure({ timeout: 180000 });
+    for (const theme of ["chola", "mughal"]) {
+      test(`laptop full-table Fit ${theme}`, async ({ page }, testInfo) => {
+        await start(page);
+        if (theme === "mughal") await chooseTheme(page, theme);
+        await page.locator("#zoom-fit").click();
+        const initial = await assertLaptopFit(page);
+        if (width === 1366) expect(initial.height).toBeGreaterThanOrEqual(360 + 52);
+        await page.screenshot({ path: testInfo.outputPath(`${theme}-laptop-initial.png`) });
+        for (const kind of ["deep", "mixed"]) {
+          await fixture(page, `
+            const run=Array.from({length:13},(_,i)=>(i%2 ? 13 : 0)+12-i);
+            const rest=Array.from({length:52},(_,i)=>i).filter(i=>!run.includes(i));
+            const foundations=[[],[],[],[]];
+            if(value==="mixed") for(const card of [13,26,39]) {
+              rest.splice(rest.indexOf(card),1); foundations[Math.floor(card/13)].push(card);
+            }
+            const waste=rest.splice(0,value==="mixed" ? 1 : 0);
+            const hidden=rest.splice(0,value==="deep" ? 20 : 6);
+            const tableau=[{cards:[...hidden,...run],faceUp:hidden.length}];
+            for(let i=0;i<6;i++) {
+              const cards=rest.splice(0,value==="mixed" ? i%3+1 : 0);
+              tableau.push({cards,faceUp:Math.max(0,cards.length-1)});
+            }
+            current.board={stock:rest,waste,foundations,tableau};
+            current.undo=[];current.started=false;return current;
+          `, kind);
+          await page.locator("#resume").click();
+          await expect(page.locator("#zoom-level")).toHaveText("Fit");
+          const long = await assertLaptopFit(page);
+          expect(long.height).toBe(initial.height);
+          expect(long.geometry.cardWidth).toBeLessThan(initial.geometry.cardWidth);
+          expect(long.geometry.faceStep).toBeGreaterThanOrEqual(long.geometry.cardWidth * .36);
+          await page.screenshot({ path: testInfo.outputPath(`${theme}-laptop-${kind}.png`) });
+        }
+        const before = await readSave(page);
+        await page.locator("#pause").click();
+        await expect(page.locator("#resume")).toBeInViewport();
+        await page.locator("#resume").click();
+        expect((await readSave(page)).board).toEqual(before.board);
+        await page.locator("#menu").click();
+        await expect(page.getByRole("button", { name: "Restart this deal", exact: true })).toBeVisible();
+        await page.getByRole("button", { name: "Card list & keyboard play", exact: true }).click();
+        await expect(page.locator("#card-list")).toBeVisible();
+        await page.locator("#keyboard-close").click();
+        await expect(page.locator("#menu")).toBeFocused();
       });
     }
   });

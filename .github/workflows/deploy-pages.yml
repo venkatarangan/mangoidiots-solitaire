@@ -45,6 +45,9 @@ jobs:
       - name: Run Pages browser smoke tests
         run: npx playwright test tests/gameplay.spec.js tests/experience.spec.js tests/readability.spec.js tests/view-controls.spec.js --grep "route types|branding|nested Pages path and resume route|landscape screen fit|cached theme upgrade|landscape keeps|zoom and custom|completion displays"
 
+      - name: Run bounded laptop browser checks
+        run: npx playwright test tests/readability.spec.js tests/view-controls.spec.js --grep "Laptop (1024x600|1366x650).*laptop full-table Fit|laptop numeric zoom|laptop responsive boundaries|laptop native card controls"
+
       - name: Configure Pages
         uses: actions/configure-pages@v6
 

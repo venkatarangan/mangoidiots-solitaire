@@ -8,6 +8,20 @@ export async function loaded(page) {
   await expect(page.locator("#offline-status")).toHaveText("Ready offline");
 }
 export async function start(page) { await loaded(page); await page.locator("#resume").click(); }
+export async function gameAction(page, id, menuName) {
+  if (await page.locator(`#${id}`).isVisible()) await page.locator(`#${id}`).click();
+  else {
+    await page.locator("#menu").click();
+    await page.getByRole("button", { name: menuName, exact: true }).click();
+  }
+}
+export async function openKeyboard(page) {
+  if (await page.locator("#accessible-panel summary").isVisible()) await page.locator("#accessible-panel summary").click();
+  else {
+    await page.locator("#menu").click();
+    await page.getByRole("button", { name: "Card list & keyboard play", exact: true }).click();
+  }
+}
 export async function readSave(page) {
   return page.evaluate(() => new Promise((resolve, reject) => {
     const request = indexedDB.open(`mangoidiots-solitaire:${new URL(document.baseURI).pathname}`, 1);

@@ -160,3 +160,16 @@ The older theme-loading timeout had already been corrected in a subsequent
 successful deployment. This maintenance updates the action runtimes to Node.js
 24, including the nested artifact uploader, while preserving the game and all
 existing deployment tests.
+
+## Laptop height and responsive display controls
+
+The player reported that Fit still left the laptop table vertically clipped
+and asked to reclaim space without regressing phone layouts.
+
+Approved choices: Fit should show every pile and the final card in long
+columns, even if cards must shrink. Numeric zoom should preserve readable
+scrolling. Wide, short laptops should use a slim left display rail, shorter
+header and compact bottom essential actions. Keep stock and foundations above
+the columns, retain portrait controls and the existing short-landscape side
+piles, and keep secondary information available through the menu. Validate
+laptop and phone layouts before publication; no extra preview approval is needed.

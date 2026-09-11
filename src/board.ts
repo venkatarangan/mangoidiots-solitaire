@@ -37,6 +37,7 @@ export class RoyalBoard extends Phaser.Scene {
   private width = 0;
   private layout?: TableLayout;
   private density = 1;
+  private viewportSize = "";
   private cardWidth = 100;
   private cardHeight = 140;
   private drag: DragState | null = null;
@@ -114,6 +115,12 @@ export class RoyalBoard extends Phaser.Scene {
   }
   refreshSize(): void {
     if (!this.state) return;
+    const viewport = this.options.mount.parentElement!;
+    const size = `${viewport.clientWidth}:${viewport.clientHeight}`;
+    if (size !== this.viewportSize) {
+      this.viewportSize = size;
+      this.cancelDrag();
+    }
     const next = this.measure(this.state);
     const density = drawingDensity(next.width, next.height, window.devicePixelRatio);
     if (!this.layout || next.width !== this.layout.width || next.height !== this.layout.height ||
@@ -126,8 +133,13 @@ export class RoyalBoard extends Phaser.Scene {
   private measure(board: Board): TableLayout {
     const viewport = this.options.mount.parentElement!;
     const compact = document.documentElement.classList.contains("compact-play");
-    const height = compact ? viewport.clientHeight : undefined;
-    return tableLayout(board, viewport.clientWidth, height, this.options.zoom());
+    const laptop = document.documentElement.classList.contains("laptop-play");
+    // The desktop maximum and laptop grid track are bounded independently of the canvas.
+    const height = compact || laptop ? viewport.clientHeight :
+      document.documentElement.classList.contains("height-fit") ? parseFloat(getComputedStyle(viewport).maxHeight) : undefined;
+    return tableLayout(board, viewport.clientWidth, {
+      arrangement: compact ? "side" : "above", availableHeight: height, zoom: this.options.zoom(),
+    });
   }
   private alignLabel(text: Phaser.GameObjects.Text): void {
     // Whole-pixel top-left positions avoid soft half-pixel text on non-Retina displays.

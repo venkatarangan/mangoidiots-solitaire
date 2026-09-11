@@ -24,6 +24,8 @@ function updateViewport(): void {
   const compact = innerWidth > height && height <= 500;
   document.documentElement.style.setProperty("--visible-height", `${height}px`);
   document.documentElement.classList.toggle("compact-play", compact);
+  document.documentElement.classList.toggle("laptop-play", innerWidth >= 1000 && height > 500 && height <= 800);
+  document.documentElement.classList.toggle("height-fit", innerWidth >= 1000 && innerWidth > height);
 }
 updateViewport();
 window.visualViewport?.addEventListener("resize", updateViewport);
@@ -434,7 +436,7 @@ async function tableSettingsDialog(): Promise<void> {
   input.addEventListener("change", () => { void setBackground(input.value).then(refresh).catch((error) => report(error, true)); });
   row.append(document.createTextNode("Custom background colour"), input);
   body.append(palette, row, button("Use theme background", async () => { await setBackground(null); refresh(); }),
-    control("p", "Use the - and + controls for 75% to 200% card sizes. Fit gives a compact overview. Scroll mode lets you swipe across cards without moving them.", "fine-print"),
+    control("p", "Use the - and + controls for readable 75% to 200% card sizes with scrolling. Fit shows the whole laptop or short-landscape table, shrinking long columns if needed; portrait still fits by width. Scroll mode lets you swipe across cards without moving them.", "fine-print"),
     button("Done", () => closeDialog(), true));
   refresh();
 }
@@ -500,9 +502,10 @@ async function helpDialog(): Promise<void> {
     "Draw one card from the left stock. When empty, recycle the waste without shuffling; each recycle costs 100 points.",
     "Drag the exposed waste card or a face-up sequence. The leading card can overlap a destination even when your finger is outside it. Release when the legal destination glows; a rejected drop returns your cards without a penalty.",
     "You can also tap a source and then a destination. Tap the same selected card again to send it to a foundation when legal.",
-    "Use - and + to zoom the cards from 75% to 200%. Fit gives a compact overview: all columns across the table, and the full table in landscape. Long portrait columns can still scroll. Your zoom choice is remembered.",
+    "Use - and + to zoom the cards from 75% to 200% with readable scrolling. Fit shows the whole table on wide laptops, desktops and short-landscape screens, including long columns even when cards must shrink. Portrait Fit remains width-only and long columns can still scroll. Your zoom choice is remembered; the default stays 100%.",
+    "On wide, short laptops, display controls move to a slim left rail and essential game actions stay below the table. Stock and foundations remain above the columns. Find New game, Restart this deal, Card list & keyboard play, help and attribution in the menu.",
     "Larger tables scroll in both directions. Turn Scroll on to swipe across cards without moving them; turn it off to drag or tap cards. You can select a card, scroll to its destination, then switch back to place it. Mouse wheels, trackpads and keyboard scrolling also work.",
-    "On a small screen, tap a column's numbered heading to inspect its cards. Card list & keyboard play is also available in the menu. Landscape keeps cards large and lets long columns scroll, with stock and foundations beside the seven columns. Colour changes your table background.",
+    "On a small screen, tap a column's numbered heading to inspect its cards. Card list & keyboard play is also available in the menu. Short landscape keeps cards large and lets long columns scroll, with stock and foundations beside the seven columns. Colour changes your table background.",
     "Undo costs 2 points and does not rewind the clock. Hints suggest useful legal moves, not guaranteed winning moves.",
     "Complete all four foundations from Ace to King to win. Finish game appears when the remaining legal sequence can be completed automatically. Manual wins and Auto-finish both show a five-second fireworks celebration and your score; View table / skip closes it.",
   ].forEach((text) => rules.append(control("li", text)));
@@ -528,7 +531,7 @@ async function aboutDialog(): Promise<void> {
   await openDialog("About Mangoidiots Solitaire");
   if (!dialog.open) return;
   body.append(brandLogo(), control("p", "Draw 1 Klondike, with original art and instrumental music inspired by India's historical courts. Choose Chola or Mughal Gardens in the Theme collection."));
-  body.append(control("p", "Version 1.3.1 includes sharper cards and pile labels, scrollable mobile tables, saved 75%-200% card zoom with a Fit overview, and one background colour across the app and playing area. Wins celebrate with visible fireworks; reduced effects offer a quieter static celebration."));
+  body.append(control("p", "Version 1.3.2 gives wide, short laptops a slim left display rail, shorter header and bottom game actions. Fit shows the complete laptop or desktop table, shrinking cards for long columns; numeric zoom keeps readable scrolling. Phone portrait and short-landscape controls stay familiar. Saved games, zoom, colours and both 1.1.0 theme packs are unchanged. Wins celebrate with visible fireworks; reduced effects offer a quieter static celebration."));
   body.append(control("p", "Play Easy, Medium, or Difficult deals with hints, Undo, a timer, and automatic finishing when available. Pause and resume your game, and revisit the latest 500 attempts in Game history."));
   const attribution = control("p", "Generated with OpenAI GPT-6 Astra. Play for free at ");
   const link = control("a", "solitaire.mangoidiots.com");

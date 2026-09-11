@@ -2,7 +2,7 @@ import { test, expect, chromium } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { unzipSync, zipSync } from "fflate";
 
-import { root, loaded, start, readSave, stockClick, fixture, layout } from "./helpers.js";
+import { root, loaded, start, readSave, stockClick, fixture, layout, gameAction, openKeyboard } from "./helpers.js";
 
 test("route types, scope, isolation, and packaged theme delivery", async ({ request }) => {
   const redirect = await request.get(root.slice(0, -1), { maxRedirects: 0 });
@@ -58,7 +58,7 @@ test("legal card placement, reveal and Undo work through keyboard card controls"
     return current;
   `);
   await page.locator("#resume").click();
-  await page.locator("#accessible-panel summary").click();
+  await openKeyboard(page);
   await page.locator('[data-card-key="t0:1"]').focus();
   await page.keyboard.press("Enter");
   await page.getByRole("button", { name: "Place on column 2", exact: true }).click();
@@ -95,14 +95,14 @@ for (const tier of ["Easy", "Medium", "Difficult"]) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await start(page);
     if (tier !== "Easy") {
-      await page.locator("#new-game").click();
+      await gameAction(page, "new-game", "New game");
       await page.locator(`input[name="difficulty"][value="${tier}"]`).check();
       await page.getByRole("button", { name: "Start new game", exact: true }).click();
     }
     const initial = await readSave(page);
     const witnesses = JSON.parse(await readFile("tools/deals/witnesses.json", "utf8"));
     const moves = witnesses[initial.dealId];
-    await page.locator("#accessible-panel summary").click();
+    await openKeyboard(page);
     for (let i = 0; i < moves.length; i++) {
       const move = moves[i];
       if (move.type === "draw") await page.getByRole("button", { name: /^Draw \(/ }).click();
@@ -151,7 +151,7 @@ test("time counts only during active play and pause survives reload", async ({ p
 test("Reset preserves the deal and records the previous attempt exactly once", async ({ page }) => {
   await start(page); await stockClick(page);
   const previous = await readSave(page);
-  await page.locator("#reset").click();
+  await gameAction(page, "reset", "Restart this deal");
   await page.getByRole("button", { name: "Restart deal", exact: true }).click();
   await expect(page.locator("#moves")).toHaveText("0");
   const current = await readSave(page);
@@ -165,7 +165,7 @@ test("Reset preserves the deal and records the previous attempt exactly once", a
 
 test("difficulty selection chooses another verified deal", async ({ page }) => {
   await start(page); const previous = await readSave(page);
-  await page.locator("#new-game").click();
+  await gameAction(page, "new-game", "New game");
   await page.locator('input[name="difficulty"][value="Difficult"]').check();
   await page.getByRole("button", { name: "Start new game", exact: true }).click();
   await expect(page.locator("#difficulty")).toHaveText("Difficult");
@@ -305,7 +305,7 @@ test("history retention keeps the newest 500 attempts", async ({ page }) => {
     };
   }));
   await loaded(page); await page.locator("#resume").click();
-  await page.locator("#reset").click(); await page.getByRole("button", { name: "Restart deal", exact: true }).click();
+  await gameAction(page, "reset", "Restart this deal"); await page.getByRole("button", { name: "Restart deal", exact: true }).click();
   await page.locator("#menu").click(); await page.getByRole("button", { name: "Game history", exact: true }).click();
   await expect(page.locator("#dialog-body")).toContainText("500 past attempts");
   const oldest = await page.evaluate(() => new Promise((resolve) => {
