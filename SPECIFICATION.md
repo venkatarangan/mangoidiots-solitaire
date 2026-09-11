@@ -6,8 +6,8 @@ Mangoidiots Solitaire is a colourful, offline-first Draw 1 Klondike game for
 phones, tablets, and desktop browsers. It combines familiar solitaire rules
 with original Indian-history-inspired visual and musical themes.
 
-- **Application version:** 1.3.2
-- **Previous working release:** 1.3.1, commit `88b289a`
+- **Application version:** 1.3.3
+- **Previous working release:** 1.3.2, commit `98f5610`
 - **Hosting:** GitHub Pages
 - **Production URL:** <https://solitaire.mangoidiots.com/>
 
@@ -92,6 +92,9 @@ branding, source code, or proprietary deal collection.
   844 x 390 CSS pixels, with browser controls present.
 - Short landscape uses a side area for stock, waste, and foundations. Long runs
   retain large indices and scroll instead of being squeezed into the height.
+- Short landscape does not reserve a row for display controls. A **Display**
+  button below Undo, Hint, and Pause in the right action rail opens zoom, Fit,
+  Scroll, and Colour in a temporary accessible panel.
 - Visible zoom controls provide 75%, 100%, 125%, 150%, 175%, 200%, and Fit.
   Fit includes the complete wide laptop/desktop and short-landscape table,
   shrinking cards when necessary. Portrait Fit remains width-only and can still
@@ -118,6 +121,9 @@ branding, source code, or proprietary deal collection.
   A theme-background reset restores the theme's original appearance.
 - The menu shows the Mangoidiots logo and groups game actions, appearance/sound,
   and help/information. About links to the public GitHub repository.
+- The current package version appears in the normal footer, About, and the
+  compact-landscape menu. The compact-landscape footer remains hidden to
+  preserve playing height.
 - Secondary information and the keyboard list remain accessible from the menu.
 - Back stacks may overlap tightly, but every exposed card's identifying strip
   remains visible. Hidden identities remain concealed.
@@ -210,8 +216,9 @@ A release is ready only when:
 12. Phone portrait widths 320/375/390/430 and landscape 667 x 300, 780 x 320,
     844 x 390 and 932 x 430 retain readable default indices and DPR 2/3 support.
     Browser zoom is evaluated through equivalent reduced CSS viewport sizes,
-    not physical screen dimensions. CI retains existing mobile checks and adds
-    a bounded laptop selection.
+    not physical screen dimensions. Landscape Display controls open temporarily
+    from the right rail without reducing board height. CI retains existing
+    mobile checks and adds a bounded laptop selection.
 
 ## Deferred work
 

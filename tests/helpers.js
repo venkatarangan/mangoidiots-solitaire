@@ -15,6 +15,15 @@ export async function gameAction(page, id, menuName) {
     await page.getByRole("button", { name: menuName, exact: true }).click();
   }
 }
+export async function displayAction(page, id) {
+  const controls = page.locator("#view-controls");
+  if (!await controls.isVisible()) {
+    await page.locator("#display-controls").click();
+    await expect(controls).toBeVisible();
+  }
+  await page.locator(`#${id}`).click();
+  if (await controls.isVisible()) await page.keyboard.press("Escape");
+}
 export async function openKeyboard(page) {
   if (await page.locator("#accessible-panel summary").isVisible()) await page.locator("#accessible-panel summary").click();
   else {

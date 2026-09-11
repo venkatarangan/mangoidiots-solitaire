@@ -1,5 +1,6 @@
 import { test, expect } from "./browser-fixtures.js";
-import { loaded, start, fixture, layout, readSave } from "./helpers.js";
+import { readFile } from "node:fs/promises";
+import { loaded, start, fixture, layout, readSave, displayAction } from "./helpers.js";
 
 const longRun = `
   const run=Array.from({length:13},(_,i)=>(i%2 ? 13 : 0)+12-i);
@@ -21,20 +22,20 @@ test("landscape keeps long runs large and scrollable, with zoom and a Fit overvi
   expect(original.width * 86 / 240).toBeGreaterThan(18);
   const viewport = page.locator("#board-viewport");
   expect(await viewport.evaluate((v) => v.scrollHeight > v.clientHeight)).toBe(true);
-  await page.locator("#pan-table").click();
+  await displayAction(page, "pan-table");
   await expect(page.locator("#pan-table")).toHaveAttribute("aria-pressed", "true");
   const bounds = await viewport.boundingBox();
   await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
   await page.mouse.wheel(0, 240);
   await expect.poll(() => viewport.evaluate((v) => v.scrollTop)).toBeGreaterThan(100);
   expect((await readSave(page)).board).toEqual(before.board);
-  await page.locator("#zoom-in").click();
+  await displayAction(page, "zoom-in");
   await expect(page.locator("#zoom-level")).toHaveText("125%");
   expect((await layout(page)).width).toBeGreaterThan(original.width * 1.2);
   expect(await viewport.evaluate((v) => v.scrollWidth > v.clientWidth)).toBe(true);
-  await page.locator("#zoom-out").click();
+  await displayAction(page, "zoom-out");
   await expect(page.locator("#zoom-level")).toHaveText("100%");
-  await page.locator("#zoom-fit").click();
+  await displayAction(page, "zoom-fit");
   await expect(page.locator("#zoom-level")).toHaveText("Fit");
   await expect.poll(() => viewport.evaluate((v) => v.scrollHeight - v.clientHeight)).toBeLessThanOrEqual(1);
   expect(await viewport.evaluate((v) => v.scrollWidth - v.clientWidth)).toBeLessThanOrEqual(1);
@@ -53,7 +54,7 @@ test.describe("Magnified Retina table", () => {
     await page.locator("#resume").click();
     const before = await readSave(page);
     for (const text of ["125%", "150%"]) {
-      await page.locator("#zoom-in").click();
+      await displayAction(page, "zoom-in");
       await expect(page.locator("#zoom-level")).toHaveText(text);
     }
     await page.locator("#board-viewport").evaluate((v) => v.scrollTo(40, 100));
@@ -74,7 +75,7 @@ test("touch Scroll mode pans across cards without changing the game", async ({ p
   await page.setViewportSize({ width: 667, height: 300 });
   await loaded(page); await fixture(page, longRun); await page.locator("#resume").click();
   const before = await readSave(page);
-  await page.locator("#pan-table").click();
+  await displayAction(page, "pan-table");
   const l = await layout(page);
   const x = l.piles.t0.x + l.width / 2, y = l.box.y + 155;
   const cdp = await context.newCDPSession(page);
@@ -86,7 +87,7 @@ test("touch Scroll mode pans across cards without changing the game", async ({ p
     await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
     await expect.poll(() => page.locator("#board-viewport").evaluate((v) => v.scrollTop)).toBeGreaterThan(40);
     expect((await readSave(page)).board).toEqual(before.board);
-    await page.locator("#pan-table").click();
+    await displayAction(page, "pan-table");
     await expect(page.locator("#pan-table")).toHaveAttribute("aria-pressed", "false");
   } finally { await cdp.detach(); }
 });
@@ -118,7 +119,7 @@ test("laptop numeric zoom scrolls both axes with accurate rail-offset drag targe
   const viewportHeight = await viewport.evaluate(v => v.clientHeight);
   const natural = await layout(page);
   for (const zoom of ["125%", "150%"]) {
-    await page.locator("#zoom-in").click();
+    await displayAction(page, "zoom-in");
     await expect(page.locator("#zoom-level")).toHaveText(zoom);
   }
   expect((await layout(page)).width).toBeCloseTo(natural.width * 1.5);
@@ -139,11 +140,11 @@ test("laptop numeric zoom scrolls both axes with accurate rail-offset drag targe
   const bottom = await layout(page);
   const bounds = await viewport.boundingBox();
   expect(bottom.box.y + bottom.geometry.columns[0].cardY.at(-1) + bottom.height).toBeLessThanOrEqual(bounds.y + bounds.height);
-  await page.locator("#zoom-fit").click();
+  await displayAction(page, "zoom-fit");
   await expect.poll(() => viewport.evaluate(v => [v.scrollLeft, v.scrollTop, v.scrollHeight - v.clientHeight])).toEqual([0, 0, 0]);
   expect(await viewport.evaluate(v => v.clientHeight)).toBe(viewportHeight);
   // A height-only resize must cancel a drag even when numeric canvas extents stay unchanged.
-  await page.locator("#zoom-in").click();
+  await displayAction(page, "zoom-in");
   const held = await layout(page);
   await page.mouse.move(held.piles.waste.x + held.width / 2, held.piles.waste.y + held.height / 2);
   await page.mouse.down();
@@ -157,7 +158,7 @@ test("laptop numeric zoom scrolls both axes with accurate rail-offset drag targe
 
 test("laptop responsive boundaries preserve portrait controls and short-landscape piles", async ({ page }) => {
   await start(page);
-  await page.locator("#zoom-fit").click();
+  await displayAction(page, "zoom-fit");
   for (const [width, height, laptop, side] of [
     [999,650,false,false], [1000,650,true,false], [1001,650,true,false],
     [1280,499,false,true], [1280,500,false,true], [1280,501,true,false],
@@ -170,21 +171,75 @@ test("laptop responsive boundaries preserve portrait controls and short-landscap
     await expect.poll(async () => (await layout(page)).geometry.side).toBe(side);
     expect(await page.locator("#zoom-fit").count()).toBe(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    const display = await page.locator(".view-controls").boundingBox();
     const board = await page.locator("#board-viewport").boundingBox();
-    if (laptop) {
+    const compact = width > height && height <= 500;
+    if (compact) {
+      await expect(page.locator("#view-controls")).toBeHidden();
+      await expect(page.locator("#display-controls")).toBeVisible();
+      const trigger = await page.locator("#display-controls").boundingBox();
+      const pause = await page.locator("#pause").boundingBox();
+      expect(trigger.y).toBeGreaterThanOrEqual(pause.y + pause.height);
+      expect(board.y).toBeLessThan(55);
+      await page.locator("#display-controls").click();
+      await expect(page.locator("#display-controls")).toHaveAttribute("aria-expanded", "true");
+      const display = await page.locator("#view-controls").boundingBox();
+      expect(display.x + display.width).toBeLessThanOrEqual(trigger.x);
+      for (const selector of ["#zoom-out", "#zoom-in", "#zoom-fit", "#pan-table", "#table-settings"]) {
+        const target = await page.locator(selector).boundingBox();
+        expect(target.width, selector).toBeGreaterThanOrEqual(44);
+        expect(target.height, selector).toBeGreaterThanOrEqual(44);
+      }
+      await page.keyboard.press("Escape");
+      await expect(page.locator("#view-controls")).toBeHidden();
+      await expect(page.locator("#display-controls")).toBeFocused();
+    } else if (laptop) {
+      const display = await page.locator("#view-controls").boundingBox();
       expect(display.x + display.width).toBeLessThanOrEqual(board.x);
       expect(display.y).toBeCloseTo(board.y);
     } else {
+      const display = await page.locator("#view-controls").boundingBox();
       expect(display.y + display.height).toBeLessThanOrEqual(board.y);
     }
   }
 });
 
+test("mobile landscape Display popover preserves table height and existing controls", async ({ page }) => {
+  const { version } = JSON.parse(await readFile("package.json", "utf8"));
+  await page.setViewportSize({ width: 667, height: 300 });
+  await start(page);
+  const before = await readSave(page);
+  const viewport = page.locator("#board-viewport");
+  const tableHeight = await viewport.evaluate((node) => node.clientHeight);
+  await expect(page.locator("footer")).toBeHidden();
+  await page.locator("#menu").click();
+  await expect(page.locator("#dialog-body .app-version")).toHaveText(`Version ${version}`);
+  await page.getByRole("button", { name: "Return to game", exact: true }).click();
+
+  await page.locator("#display-controls").click();
+  await displayAction(page, "zoom-out");
+  await expect(page.locator("#zoom-level")).toHaveText("75%");
+  await displayAction(page, "zoom-fit");
+  await expect(page.locator("#zoom-level")).toHaveText("Fit");
+  await displayAction(page, "pan-table");
+  await expect(page.locator("#pan-table")).toHaveAttribute("aria-pressed", "true");
+  expect(await viewport.evaluate((node) => node.clientHeight)).toBe(tableHeight);
+  expect((await readSave(page)).board).toEqual(before.board);
+
+  await displayAction(page, "table-settings");
+  await expect(page.locator("#dialog-title")).toHaveText("Table appearance");
+  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await expect(page.locator("#display-controls")).toBeFocused();
+  expect(await viewport.evaluate((node) => node.clientHeight)).toBe(tableHeight);
+
+  await page.locator("#display-controls").click();
+  await page.locator("#score").click();
+  await expect(page.locator("#view-controls")).toBeHidden();
+});
+
 test("laptop status and errors reserve space without covering cards or essential actions", async ({ page }) => {
   await page.setViewportSize({ width: 1000, height: 501 });
   await loaded(page); await fixture(page, longRun); await page.locator("#resume").click();
-  await page.locator("#zoom-fit").click();
+  await displayAction(page, "zoom-fit");
   const viewport = page.locator("#board-viewport");
   const originalHeight = await viewport.evaluate(v => v.clientHeight);
   await page.evaluate(() => {
@@ -221,9 +276,9 @@ test("zoom and custom background persist offline and survive a theme change", as
   };
   await start(page);
   const before = await readSave(page);
-  await page.locator("#zoom-in").click();
+  await displayAction(page, "zoom-in");
   await expect(page.locator("#zoom-level")).toHaveText("125%");
-  await page.locator("#table-settings").click();
+  await displayAction(page, "table-settings");
   await page.getByRole("button", { name: "Forest", exact: true }).click();
   await page.getByRole("button", { name: "Done", exact: true }).click();
   await appColour("rgb(16, 62, 56)", "rgb(255, 255, 255)");
@@ -240,17 +295,17 @@ test("zoom and custom background persist offline and survive a theme change", as
     return [[0, 0], [x, y]].map(([x, y]) => Array.from(ctx.getImageData(x, y, 1, 1).data));
   }, { screenshot, x: Math.ceil(box.x + 1), y: Math.ceil(box.y + 1) });
   expect(pixels).toEqual([[16, 62, 56, 255], [16, 62, 56, 255]]);
-  await page.locator("#table-settings").click();
+  await displayAction(page, "table-settings");
   await page.getByRole("button", { name: "Ivory", exact: true }).click();
   await appColour("rgb(245, 237, 219)", "rgb(0, 0, 0)");
   await page.getByLabel("Custom background colour").fill("#b0c4de");
   await page.getByLabel("Custom background colour").dispatchEvent("change");
   await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(176, 196, 222)");
   await page.getByRole("button", { name: "Done", exact: true }).click();
-  await page.locator("#pan-table").click();
+  await displayAction(page, "pan-table");
   await expect(page.locator("#pan-table")).toHaveCSS("color", "rgb(176, 196, 222)");
   await expect(page.locator("#pan-table")).toHaveCSS("background-color", "rgb(0, 0, 0)");
-  await page.locator("#pan-table").click();
+  await displayAction(page, "pan-table");
   await page.locator("#themes").click();
   await page.getByLabel("Available theme packs").selectOption("mughal@1.1.0");
   await page.getByRole("button", { name: "Use theme", exact: true }).click();
@@ -264,7 +319,7 @@ test("zoom and custom background persist offline and survive a theme change", as
   await expect(page.locator("#zoom-level")).toHaveText("125%");
   await appColour("rgb(176, 196, 222)", "rgb(0, 0, 0)");
   expect((await readSave(page)).board).toEqual(before.board);
-  await page.locator("#table-settings").click();
+  await displayAction(page, "table-settings");
   await page.getByRole("button", { name: "Use theme background", exact: true }).click();
   await expect(page.locator("#board-viewport")).toHaveCSS("background-color", "rgb(23, 59, 83)");
   await expect(page.locator("html")).not.toHaveClass(/custom-background/);
@@ -294,11 +349,11 @@ test("older preferences gain safe display defaults and zoom controls respect the
   await loaded(page);
   await expect(page.locator("#zoom-level")).toHaveText("100%");
   await expect(page.locator("#board-viewport")).toHaveCSS("background-color", defaultColour);
-  await page.locator("#zoom-out").click();
+  await displayAction(page, "zoom-out");
   await expect(page.locator("#zoom-level")).toHaveText("75%");
   await expect(page.locator("#zoom-out")).toBeDisabled();
   for (const text of ["100%", "125%", "150%", "175%", "200%"]) {
-    await page.locator("#zoom-in").click();
+    await displayAction(page, "zoom-in");
     await expect(page.locator("#zoom-level")).toHaveText(text);
   }
   await expect(page.locator("#zoom-in")).toBeDisabled();

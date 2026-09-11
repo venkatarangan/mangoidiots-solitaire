@@ -1,7 +1,7 @@
 import { test, expect } from "./browser-fixtures.js";
 import { readFile } from "node:fs/promises";
 import { unzipSync } from "fflate";
-import { loaded, start, readSave, stockClick, fixture, layout, root, storageKey } from "./helpers.js";
+import { loaded, start, readSave, stockClick, fixture, layout, root, storageKey, displayAction } from "./helpers.js";
 
 async function chooseTheme(page, id) {
   // Hosted runners rasterize both Retina card sets without a hardware GPU.
@@ -21,7 +21,7 @@ async function assertScreenFit(page) {
     const box = canvas.getBoundingClientRect();
     const layout = JSON.parse(canvas.dataset.layout);
     const viewport = { width: innerWidth, height: visualViewport.height };
-    const controls = ["undo", "hint", "pause", "themes", "menu"].map((id) => {
+    const controls = ["undo", "hint", "pause", "display-controls", "themes", "menu"].map((id) => {
       const { x, y, width, height } = document.getElementById(id).getBoundingClientRect();
       return { id, x, y, width, height };
     });
@@ -79,7 +79,7 @@ for (const view of views) {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
         if (l.geometry.compact) expect(l.width * 86 / 240).toBeGreaterThanOrEqual(view.height <= 500 ? 12 : 14);
         if (view.height <= 500) {
-          await page.locator("#zoom-fit").click();
+          await displayAction(page, "zoom-fit");
           await expect(page.locator("#zoom-level")).toHaveText("Fit");
           await assertScreenFit(page);
         }
@@ -93,7 +93,7 @@ for (const view of views) {
           current.undo=[]; current.started=false; return current;
         `);
         await page.locator("#resume").click();
-        await page.locator("#zoom-fit").click();
+        await displayAction(page, "zoom-fit");
         await expect(page.locator("#zoom-level")).toHaveText("Fit");
         if (view.height <= 500) await assertScreenFit(page);
         await page.screenshot({ path: testInfo.outputPath(`${theme}-long-stack.png`), fullPage: true });
@@ -164,7 +164,7 @@ for (const [width, height, dpr] of [[1024,600,1], [1280,600,2], [1280,720,1], [1
       test(`laptop full-table Fit ${theme}`, async ({ page }, testInfo) => {
         await start(page);
         if (theme === "mughal") await chooseTheme(page, theme);
-        await page.locator("#zoom-fit").click();
+        await displayAction(page, "zoom-fit");
         const initial = await assertLaptopFit(page);
         if (width === 1366) expect(initial.height).toBeGreaterThanOrEqual(360 + 52);
         await page.screenshot({ path: testInfo.outputPath(`${theme}-laptop-initial.png`) });
@@ -220,7 +220,7 @@ test.describe("Retina rotation", () => {
       current.undo=[];current.started=false;return current;
     `);
     await page.locator("#resume").click();
-    await page.locator("#zoom-fit").click();
+    await displayAction(page, "zoom-fit");
     await expect(page.locator("#zoom-level")).toHaveText("Fit");
     const before = await readSave(page);
     const portrait = await layout(page);
@@ -263,7 +263,7 @@ test.describe("Retina rotation", () => {
 test("landscape screen fit respects reserved notch and home-indicator space", async ({ page }) => {
   await page.setViewportSize({ width: 844, height: 390 });
   await start(page);
-  await page.locator("#zoom-fit").click();
+  await displayAction(page, "zoom-fit");
   await expect(page.locator("#zoom-level")).toHaveText("Fit");
   // Desktop emulation has zero env(safe-area-inset-*); reserve equivalent space explicitly.
   await page.addStyleTag({ content: ".compact-play .app-shell { padding: 0 44px 21px; }" });

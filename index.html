@@ -49,7 +49,7 @@
       <span id="difficulty">Easy</span><span class="caption-dot">&bull;</span><span id="deal-label"></span>
       <span id="offline-status">Preparing your table...</span>
     </div>
-    <nav class="view-controls" aria-label="Table view">
+    <nav id="view-controls" class="view-controls" aria-label="Table view" popover="auto">
       <button id="zoom-out" aria-label="Zoom out" title="Smaller cards">&#8722;</button>
       <output id="zoom-level" aria-live="polite" aria-label="Card zoom">100%</output>
       <button id="zoom-in" aria-label="Zoom in" title="Larger cards">+</button>
@@ -78,6 +78,7 @@
         <button id="undo" title="Undo (Ctrl+Z)"><span aria-hidden="true">&#8630;</span> Undo</button>
         <button id="hint" title="Hint (H)"><span aria-hidden="true">&#10022;</span> Hint</button>
         <button id="pause" title="Pause (P)"><span aria-hidden="true">&#10074;&#10074;</span> Pause</button>
+        <button id="display-controls" class="compact-display" popovertarget="view-controls" aria-label="Open table display controls" aria-expanded="false"><span aria-hidden="true">&#9881;</span> Display</button>
         <span class="toolbar-divider"></span>
         <button id="reset" class="wide-action">Reset</button>
         <button id="new-game" class="wide-action">New game</button>
@@ -89,7 +90,7 @@
         <div id="card-list"></div>
       </details>
     </main>
-    <footer>Generated with OpenAI GPT-6 Astra. Play for free at <a href="https://solitaire.mangoidiots.com/">solitaire.mangoidiots.com</a>.</footer>
+    <footer>Version <span id="app-version"></span>. Generated with OpenAI GPT-6 Astra. Play for free at <a href="https://solitaire.mangoidiots.com/">solitaire.mangoidiots.com</a>.</footer>
   </div>
   <dialog id="dialog" aria-labelledby="dialog-title">
     <div class="dialog-heading"><h2 id="dialog-title"></h2><button id="dialog-close" class="icon-button" aria-label="Close dialog">&#215;</button></div>

@@ -10,7 +10,16 @@ remote progress tracking.
 
 Play at <https://solitaire.mangoidiots.com/>.
 
-## What's new in 1.3.2
+## What's new in 1.3.3
+
+The footer now shows the exact application version, sourced from the same
+package metadata used by the build and offline worker. In short mobile
+landscape, the permanent display-control row is gone: use **Display** below
+Undo, Hint, and Pause to open zoom, Fit, Scroll, and Colour temporarily without
+taking height away from the cards. The version remains available in the menu
+while the landscape footer is hidden.
+
+### Laptop layout improvements introduced in 1.3.2
 
 Wide, short laptop windows now use a slim **left display rail**, a shorter
 header and bottom game actions, leaving more height for cards. **Fit** shows
@@ -47,7 +56,7 @@ when you win. Existing games and Undo history are preserved.
 - Forgiving legal-target drag-and-drop geometry
 - Responsive phone, tablet, landscape, and desktop layouts
 - Large-index card faces on phones and high-density table rendering
-- Scrollable landscape play with readable cards, zoom controls, and a Fit overview
+- Scrollable landscape play with readable cards and temporary Display controls
 - Height-aware laptop/desktop Fit and compact laptop display controls
 - Saved table background colours and visible victory fireworks
 - Visible underlying foundation and waste cards while dragging
@@ -102,7 +111,8 @@ profile. They are not uploaded or synchronized.
 On phones, card ranks and suits use a larger, cleaner top strip. In short
 landscape windows, stock, waste, and foundations sit beside the seven playing
 columns. Long runs scroll instead of shrinking the card numbers; Undo, Hint,
-Pause, and Themes remain within reach. Help, attribution, deal
+Pause, and Themes remain within reach. **Display** below Pause opens zoom, Fit,
+Scroll, and Colour without reserving a row above the cards. Help, attribution, deal
 details, and **Card list & keyboard play** are available in the menu. Hidden
 stacks overlap more tightly without revealing their identities.
 
@@ -113,6 +123,8 @@ available through the menu. Taller desktops keep the spacious control row.
 
 Use **- / +** for readable 75%-200% card sizes with scrolling, or **Fit** for a
 full-table overview on wide laptops, desktops and short landscape screens.
+In short mobile landscape, open these controls with **Display** in the
+right-side action rail.
 Fit may shrink long runs; portrait Fit remains width-only, so long portrait
 columns can still scroll. Zoom is saved locally and defaults to 100%.
 Use **Scroll** to swipe across the table without dragging
