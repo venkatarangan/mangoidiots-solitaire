@@ -1,5 +1,7 @@
 # Mangoidiots Solitaire
 
+![Mangoidiots Solitaire](screenshots/mangoidiots-solitaire-cover.png)
+
 An offline-first Draw 1 Klondike game with original Chola and Mughal themes,
 responsive card interactions, synthesized music, local saves, and no account or
 remote progress tracking.
@@ -55,6 +57,16 @@ when you win. Existing games and Undo history are preserved.
 
 The game does not load analytics, advertising, external fonts, CDNs, or
 third-party runtime services.
+
+## Screenshots
+
+![Mughal Garden theme](screenshots/mangoidiots-solitaire-105253.png)
+
+This is the Mughal Garden theme.
+
+![Chola Royal theme](screenshots/mangoidiots-solitaire-105311.png)
+
+This is the Chola Royal theme.
 
 ## Play and install
 
@@ -274,6 +286,27 @@ email address.
 | `.github/workflows/deploy-pages.yml` | Automatic Pages deployment |
 | `SPECIFICATION.md` | Product and acceptance specification |
 | `prompt-history.md` | User-authored prompts retained as project history |
+
+## Initial prompt
+
+The project began from the following prompt, retained in the repository as
+`initial-prompt.txt`:
+
+```text
+Let us ideate here, write the specification in an easier format for me to grasp, steer your decisions and approve. After which you can build it.
+
+I wish to have a clone of the popular solitaire game, the Klondike version as in Microsoft Solitatire Collection. I want the game to completely offline, the progress can be stored in local. The app to be called as Mangoidiots Solitaire.
+
+I am thinking of a single-page webapp, using say Phaser 3 (JS Game Engine) for attractive graphics and visuals. Currently the first theme or the card pack, I wish to support should be Tamil Nadu History Inspired from the Raja Raja Cholan period, the king, queens and so on should be from the Chola inspiration. It should be colourful, shaded and interactive visual effects. The audio and video can be a packaged single file for each theme or cardpack. Do another theme inspired by mughal rule period in india, the music can be islamic inspired.
+
+To begin it can support only Draw 1, Cards Per Draw. Scoring Can be Standard. Layout Direction is Left. There should be a game timer. There should be a hint button to help solve. The difficulty can be Easy, Medium and Difficult. There should be audio for card shuffle, card draw, successful placement, during game victory and so on. There should be animations like victory animations, score animations. There should be an option to pause the game and continue on next reload, with the state remembered in local web storage for now. The music should be Tamil Nadu classical carnatic music instruments inspired. There should be a volume mute option.
+
+There should be easy Undo. Reset Option. A game history to show all the past games played to a maximum of 500 past games.
+
+The footer and about page can read Generated with OpenAI GPT-6 Astra. Play for free at the published game address.  The logo for mangoidiots.com is attached, use it in the about page and help pages. 
+
+Once I approve the app after testing, setup a local git repo for this, and then publish this to my public github.com account as well. keep only the latest files and versions, store the prompts used as a well in a file called prompt-history.md. publish the output to github pages for hosting. give me instructions on setup the DNS for the same. Create and publish a Social OG Preview image.
+```
 
 ## Attribution
 
