@@ -173,3 +173,16 @@ header and compact bottom essential actions. Keep stock and foundations above
 the columns, retain portrait controls and the existing short-landscape side
 piles, and keep secondary information available through the menu. Validate
 laptop and phone layouts before publication; no extra preview approval is needed.
+
+## Visible release version and more mobile-landscape space
+
+> Always show the current version number in the footer so it is clear when the
+> page has refreshed with new code. In mobile landscape, move the -, +, Fit,
+> Scroll, and Colour controls away from the top so the cards receive maximum
+> vertical space.
+
+Approved choices: keep the compact-landscape footer hidden and expose the
+version in its menu; retain the normal footer version elsewhere. Add one
+**Display** button below Undo, Hint, and Pause in the existing right action
+rail. It opens the existing table controls temporarily instead of permanently
+reserving a row.

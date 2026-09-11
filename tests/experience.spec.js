@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
-import { loaded, start, readSave, stockClick, fixture, layout } from "./helpers.js";
+import { loaded, start, readSave, stockClick, fixture, layout, displayAction } from "./helpers.js";
 
 async function foundationFixture(page, suit = 0, rank = 1) {
   await fixture(page, `
@@ -38,7 +38,7 @@ for (const viewport of [{ width: 320, height: 780 }, { width: 780, height: 420 }
         await page.setViewportSize(viewport); await page.emulateMedia({ reducedMotion: "reduce" });
         await loaded(page); await foundationFixture(page, suit, rank);
         if ((await layout(page)).geometry.side) {
-          await page.locator("#zoom-fit").click();
+          await displayAction(page, "zoom-fit");
           await expect(page.locator("#zoom-level")).toHaveText("Fit");
         }
         const before = await readSave(page);
@@ -208,9 +208,10 @@ test("a background timer save cannot reject a legal drop or overwrite its new bo
 });
 
 test("Mangoidiots branding, logo in organized menu and About/Help, repository link, and both theme choices", async ({ page }, testInfo) => {
+  const { version } = JSON.parse(await readFile("package.json", "utf8"));
   await start(page);
   await expect(page).toHaveTitle("Mangoidiots Solitaire");
-  await expect(page.locator("footer")).toHaveText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
+  await expect(page.locator("footer")).toHaveText(`Version ${version}. Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.`);
   await expect(page.locator("footer a")).toHaveAttribute("href", "https://solitaire.mangoidiots.com/");
   expect(await page.locator(".app-shell img").count()).toBe(0);
   await page.locator("#menu").click();
@@ -223,12 +224,13 @@ test("Mangoidiots branding, logo in organized menu and About/Help, repository li
   ]) {
     expect(await page.getByRole("region", { name: group, exact: true }).getByRole("button").allTextContents()).toEqual(buttons);
   }
+  await expect(page.locator("#dialog-body .app-version")).toHaveText(`Version ${version}`);
   await page.getByRole("button", { name: "Return to game", exact: true }).click();
   await expect(page.locator("#dialog")).not.toBeVisible();
   await page.locator("#menu").click();
   await page.getByRole("button", { name: "About Mangoidiots Solitaire", exact: true }).click();
   await expect(page.locator("#dialog-body")).toContainText("Generated with OpenAI GPT-6 Astra. Play for free at solitaire.mangoidiots.com.");
-  for (const text of ["Version 1.3.2", "left display rail", "numeric zoom keeps readable scrolling", "Phone portrait", "fireworks", "GitHub Pages"]) {
+  for (const text of [`Version ${version}`, "Display opens zoom", "right action rail", "phone portrait", "GitHub Pages"]) {
     await expect(page.locator("#dialog-body")).toContainText(text);
   }
   const repository = page.getByRole("link", { name: "GitHub", exact: true });

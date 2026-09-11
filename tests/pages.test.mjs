@@ -74,6 +74,7 @@ test("Pages HTML supports nested and custom-domain base paths", async () => {
 });
 
 test("manifest, theme catalog and worker are static-host compatible", async () => {
+  const { version } = JSON.parse(await readFile("package.json", "utf8"));
   assert.equal((await readFile("dist/CNAME", "utf8")).trim(), "solitaire.mangoidiots.com");
   const preview = await readFile("dist/social-preview.png");
   assert.equal(preview.subarray(1, 4).toString(), "PNG");
@@ -88,6 +89,7 @@ test("manifest, theme catalog and worker are static-host compatible", async () =
   assert.equal(themes.defaultTheme, "chola");
   assert.deepEqual(themes.themes.map((theme) => theme.id), ["chola", "mughal"]);
   const worker = await readFile("dist/sw.js", "utf8");
+  assert.match(worker, new RegExp(`"version":"${version.replaceAll(".", "\\.")}"`));
   assert.doesNotMatch(worker, /__SOLITAIRE_SW_CONFIG__/);
   assert.match(worker, /mangoidiots-solitaire-core/);
 });

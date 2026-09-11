@@ -54,9 +54,11 @@ button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visibl
 .panning #board { touch-action: pan-x pan-y pinch-zoom; }
 .panning #board canvas { pointer-events: none; }
 .view-controls { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 4px 0; }
+.view-controls[popover]:not(:popover-open) { display: none; }
 .view-controls button { min-width: 44px; min-height: 44px; border: 1px solid #ddbb7866; border-radius: 7px; background: #072c2750; color: #f5eddb; font-size: 12px; padding: 4px 7px; }
 .view-controls button[aria-pressed=true] { background: #ddbb78; color: #17392d; }
 #zoom-level { min-width: 40px; text-align: center; font-size: 12px; }
+.compact-display { display: none; }
 .colour-swatches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .colour-swatches button { min-height: 44px; border: 2px solid #687763; border-radius: 6px; }
 .colour-swatches button[aria-pressed=true] { outline: 3px solid #294438; outline-offset: 2px; }
@@ -128,7 +130,7 @@ progress { width: min(360px,90vw); height: 7px; accent-color: #e5c78e; margin: 1
   max-width: none;
   padding: env(safe-area-inset-top, 0px) max(6px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(6px, env(safe-area-inset-left, 0px));
   display: grid;
-  grid-template-rows: 48px 48px minmax(0, 1fr);
+  grid-template-rows: 48px minmax(0, 1fr);
 }
 .compact-play .topbar {
   display: flex; min-width: 0; padding: 2px 0; gap: 6px;
@@ -144,6 +146,22 @@ progress { width: min(360px,90vw); height: 7px; accent-color: #e5c78e; margin: 1
 .compact-play .theme-button { min-width: 60px; padding: 4px; font-size: 12px; }
 .compact-play .icon-button { width: 44px; height: 44px; }
 .compact-play .game-caption, .compact-play footer { display: none; }
+.compact-play .view-controls:popover-open {
+  position: fixed;
+  inset: 52px max(86px, calc(env(safe-area-inset-right, 0px) + 80px)) auto auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(44px, 1fr));
+  width: min(224px, calc(100vw - 104px));
+  margin: 0;
+  padding: 8px;
+  gap: 6px;
+  border: 1px solid #ddbb78;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--table) 94%, black);
+  color: var(--page-ink, #f5eddb);
+  box-shadow: 0 10px 35px #0009;
+}
+.compact-play .view-controls:popover-open button { width: 100%; }
 .compact-play main {
   min-height: 0; position: relative; display: grid;
   grid-template-columns: minmax(0, 1fr) 76px; grid-template-rows: minmax(0, 1fr);
@@ -157,11 +175,13 @@ progress { width: min(360px,90vw); height: 7px; accent-color: #e5c78e; margin: 1
 }
 .compact-play .toolbar button { width: 76px; height: 44px; min-height: 44px; padding: 2px; font-size: 12px; }
 .compact-play .toolbar button span { font-size: 14px; padding-right: 2px; }
+.compact-play .compact-display { display: block; }
 .compact-play .toolbar-divider, .compact-play .wide-action { display: none; }
 .compact-play #message {
-  grid-area: 1 / 2; align-self: end; max-height: max(18px, calc(100% - 196px)); min-height: 0;
+  grid-area: 1 / 2; align-self: end; max-height: max(14px, calc(100% - 244px)); min-height: 0;
   overflow: auto; font-size: 11px; line-height: 1.25; text-align: left; padding: 2px;
 }
+.compact-play main:has(#finish:not([hidden])) #message { display: none; }
 .compact-play #error {
   position: absolute; z-index: 25; inset: auto 0 0; max-height: 40%; overflow: auto;
   margin: 0; font-size: 12px;

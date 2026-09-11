@@ -7,7 +7,8 @@ import { fileURLToPath } from "node:url";
 import { unzipSync } from "fflate";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const VERSION = "1.3.2";
+const metadata = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const VERSION = metadata.version;
 const BUNDLED_THEMES = [
   { id: "chola", version: "1.1.0", name: "Chola Royal Court" },
   { id: "mughal", version: "1.1.0", name: "Mughal Gardens" },
@@ -109,9 +110,6 @@ function icon(size) {
     chunk("IEND", Buffer.alloc(0)),
   ]);
 }
-
-const metadata = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
-if (metadata.version !== VERSION) throw new Error(`Package and site version must both be ${VERSION}.`);
 
 const bundledThemes = [];
 for (const expected of BUNDLED_THEMES) {

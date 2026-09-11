@@ -19,9 +19,26 @@ const body = element("dialog-body");
 const loading = element("loading");
 const shell = document.querySelector<HTMLElement>(".app-shell")!;
 const keyboardDialog = element<HTMLDialogElement>("keyboard-dialog");
+const viewControls = element<HTMLElement>("view-controls");
+const displayControls = element<HTMLButtonElement>("display-controls");
+element("app-version").textContent = __APP_VERSION__;
+
+function displayControlsOpen(): boolean {
+  return viewControls.matches(":popover-open");
+}
+
+function closeDisplayControls(restoreFocus = false): void {
+  if (!displayControlsOpen()) return;
+  viewControls.hidePopover();
+  if (restoreFocus) displayControls.focus({ preventScroll: true });
+}
+
 function updateViewport(): void {
   const height = (window.visualViewport?.height ?? innerHeight) * (window.visualViewport?.scale ?? 1);
   const compact = innerWidth > height && height <= 500;
+  if (!compact) closeDisplayControls();
+  if (compact) viewControls.setAttribute("popover", "auto");
+  else viewControls.removeAttribute("popover");
   document.documentElement.style.setProperty("--visible-height", `${height}px`);
   document.documentElement.classList.toggle("compact-play", compact);
   document.documentElement.classList.toggle("laptop-play", innerWidth >= 1000 && height > 500 && height <= 800);
@@ -271,7 +288,9 @@ function resume(): void {
 async function openDialog(title: string): Promise<void> {
   if (busy || failed) return;
   resumeAfterDialog = playing;
-  lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  lastFocused = viewControls.contains(document.activeElement) ? displayControls
+    : document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  closeDisplayControls();
   await pause();
   if (failed) return;
   element("dialog-title").textContent = title;
@@ -378,6 +397,7 @@ async function menuDialog(): Promise<void> {
     body.append(section);
   }
   body.append(control("p", "Your game stays on this browser and device. Clearing site data can remove saved games and downloaded themes.", "fine-print"));
+  body.append(control("p", `Version ${__APP_VERSION__}`, "fine-print app-version"));
   body.append(control("p", `${current.difficulty} \u00b7 ${current.dealId} \u00b7 ${theme.manifest.name} \u00b7 ${element("offline-status").textContent}`, "fine-print"));
 }
 async function setZoom(zoom: number): Promise<void> {
@@ -505,7 +525,7 @@ async function helpDialog(): Promise<void> {
     "Use - and + to zoom the cards from 75% to 200% with readable scrolling. Fit shows the whole table on wide laptops, desktops and short-landscape screens, including long columns even when cards must shrink. Portrait Fit remains width-only and long columns can still scroll. Your zoom choice is remembered; the default stays 100%.",
     "On wide, short laptops, display controls move to a slim left rail and essential game actions stay below the table. Stock and foundations remain above the columns. Find New game, Restart this deal, Card list & keyboard play, help and attribution in the menu.",
     "Larger tables scroll in both directions. Turn Scroll on to swipe across cards without moving them; turn it off to drag or tap cards. You can select a card, scroll to its destination, then switch back to place it. Mouse wheels, trackpads and keyboard scrolling also work.",
-    "On a small screen, tap a column's numbered heading to inspect its cards. Card list & keyboard play is also available in the menu. Short landscape keeps cards large and lets long columns scroll, with stock and foundations beside the seven columns. Colour changes your table background.",
+    "On a small screen, tap a column's numbered heading to inspect its cards. Card list & keyboard play is also available in the menu. Short landscape keeps cards large and lets long columns scroll, with stock and foundations beside the seven columns. Open Display below Pause for zoom, Fit, Scroll and Colour without using permanent table height.",
     "Undo costs 2 points and does not rewind the clock. Hints suggest useful legal moves, not guaranteed winning moves.",
     "Complete all four foundations from Ace to King to win. Finish game appears when the remaining legal sequence can be completed automatically. Manual wins and Auto-finish both show a five-second fireworks celebration and your score; View table / skip closes it.",
   ].forEach((text) => rules.append(control("li", text)));
@@ -531,7 +551,7 @@ async function aboutDialog(): Promise<void> {
   await openDialog("About Mangoidiots Solitaire");
   if (!dialog.open) return;
   body.append(brandLogo(), control("p", "Draw 1 Klondike, with original art and instrumental music inspired by India's historical courts. Choose Chola or Mughal Gardens in the Theme collection."));
-  body.append(control("p", "Version 1.3.2 gives wide, short laptops a slim left display rail, shorter header and bottom game actions. Fit shows the complete laptop or desktop table, shrinking cards for long columns; numeric zoom keeps readable scrolling. Phone portrait and short-landscape controls stay familiar. Saved games, zoom, colours and both 1.1.0 theme packs are unchanged. Wins celebrate with visible fireworks; reduced effects offer a quieter static celebration."));
+  body.append(control("p", `Version ${__APP_VERSION__} keeps the current release visible in the footer and menu. In short mobile landscape, Display opens zoom, Fit, Scroll and Colour from the right action rail without reserving a row above the cards. Wide, short laptops retain their slim left display rail, and phone portrait remains unchanged. Saved games, zoom, colours and both 1.1.0 theme packs are unchanged.`));
   body.append(control("p", "Play Easy, Medium, or Difficult deals with hints, Undo, a timer, and automatic finishing when available. Pause and resume your game, and revisit the latest 500 attempts in Game history."));
   const attribution = control("p", "Generated with OpenAI GPT-6 Astra. Play for free at ");
   const link = control("a", "solitaire.mangoidiots.com");
@@ -774,6 +794,9 @@ action("pan-table", () => {
   if (busy || failed) return;
   panning = !panning; render();
   message(panning ? "Scroll mode: swipe the table without moving cards. Turn Scroll off to play." : "Card mode: drag cards, or tap a source and its destination.");
+});
+viewControls.addEventListener("toggle", () => {
+  displayControls.setAttribute("aria-expanded", String(displayControlsOpen()));
 });
 action("dialog-close", () => closeDialog());
 action("keyboard-close", () => keyboardDialog.close());
