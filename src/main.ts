@@ -7,6 +7,7 @@ import { createBoard, type RoyalBoard, type Selection } from "./board";
 import logoURL from "./assets/mangoidiots-logo.png";
 import { ZOOM_LEVELS, validZoom, validColour, tableInk } from "./table-appearance";
 import { mountVictoryCelebration } from "./victory";
+import { startAnalytics } from "./analytics";
 
 function element<T extends HTMLElement>(id: string): T {
   const node = document.getElementById(id);
@@ -540,6 +541,7 @@ async function helpDialog(): Promise<void> {
   body.append(control("p", "Displayed playing score never falls below zero; negative internal totals must be earned back. Undo restores the previous action score and keeps all time/Undo deductions. Victory adds floor(700,000 / active seconds) if the game took more than 30 whole seconds."));
   body.append(control("h3", "Offline and privacy"));
   body.append(control("p", "Visit once online and wait for Ready offline. There are no accounts or progress uploads. Progress belongs to this browser profile and site address; clearing site data or browser eviction can remove it."));
+  body.append(control("p", "When you are online, the site uses Google Analytics to count visits. It starts only after the game is ready, never affects offline play, sends no game progress, and respects Do Not Track and Global Privacy Control. Advertising features are off."));
   body.append(control("p", "Chola and Mughal court illustrations are original historical interpretations, not authenticated portraits. Difficulty tiers are estimates over proven-solvable starting deals.", "fine-print"));
 }
 function brandLogo(): HTMLImageElement {
@@ -562,7 +564,7 @@ async function aboutDialog(): Promise<void> {
   repository.href = "https://github.com/venkatarangan/mangoidiots-solitaire";
   repository.target = "_blank"; repository.rel = "noopener noreferrer";
   source.append(repository, document.createTextNode(".")); body.append(source);
-  body.append(control("p", "Free to play on GitHub Pages, with no account, analytics, advertising, or progress uploads. After the first complete download, your game and downloaded themes work offline. Progress, zoom, colour and other preferences stay in this browser; cloud sync is not included.", "fine-print"));
+  body.append(control("p", "Free to play on GitHub Pages, with no account, advertising, or progress uploads. Google Analytics counts visits when you are online; it never affects offline play. After the first complete download, your game and downloaded themes work offline. Progress, zoom, colour and other preferences stay in this browser; cloud sync is not included.", "fine-print"));
   body.append(control("p", "An independent game, not affiliated with Microsoft. Artwork and synthesized music are creative interpretations, not historical portraits or recordings.", "fine-print"));
 }
 async function themesDialog(): Promise<void> {
@@ -759,6 +761,7 @@ async function initialize(): Promise<void> {
     if (current.status === "won") showVictory();
     else if (current.started) message("Your game is saved. Resume when you are ready.");
     if (selectedTheme.warning) message(selectedTheme.warning);
+    startAnalytics();
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error);
     console.error(error); progress(text, 0);

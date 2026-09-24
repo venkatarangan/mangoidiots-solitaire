@@ -64,8 +64,9 @@ when you win. Existing games and Undo history are preserved.
 - Original synthesized effects and instrumental music
 - Mute, separate volume controls, and reduced-motion preference
 
-The game does not load analytics, advertising, external fonts, CDNs, or
-third-party runtime services.
+The game does not load advertising, external fonts, or CDNs. Its only
+third-party service is Google Analytics, used to count visits; see
+[Analytics](#analytics).
 
 ## Screenshots
 
@@ -272,6 +273,27 @@ Commit `f0ef819` preserves the previous 1.2.0 custom-domain/social-preview
 release. Version 1.3.0 adds the readability and display controls described above.
 Returning to an earlier release does not require deleting saved games or
 rewriting repository history.
+
+## Analytics
+
+The production site, <https://solitaire.mangoidiots.com/>, uses Google
+Analytics 4 (`gtag.js`) to measure visits, such as page views and approximate
+visitor counts. It is kept deliberately light:
+
+- It starts only after the game reports **Ready offline**, during browser idle
+  time, and only when the browser is online.
+- It never runs on local, preview, or test hosts.
+- Browsers sending Global Privacy Control or Do Not Track are not measured.
+- Google signals, ad personalization, and advertising storage are turned off.
+- No game data, scores, saves, or history are sent. Google Analytics sets its
+  own first-party cookies on the site.
+- The service worker does not cache or intercept Google requests. If they fail
+  or are blocked, the game is unaffected; offline play never needs them.
+
+The page's Content Security Policy allows scripts only from the game itself and
+`www.googletagmanager.com`, and network/image requests to Google Analytics
+endpoints. See Google's [Privacy Policy](https://policies.google.com/privacy)
+for how Google processes this data.
 
 ## Publication privacy
 
