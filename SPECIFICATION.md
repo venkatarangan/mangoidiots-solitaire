@@ -145,8 +145,12 @@ branding, source code, or proprietary deal collection.
   stored in IndexedDB.
 - Theme media and offline files are stored in browser Cache Storage.
 - A Web Lock prevents two tabs from writing the same game simultaneously.
-- No account, analytics, advertising, telemetry, or progress-upload API is
-  included.
+- No account, advertising, game telemetry, or progress-upload API is included.
+- Google Analytics 4 measures visits on the production host only. It loads
+  after **Ready offline**, during idle time, and only while online. It honours
+  Global Privacy Control and Do Not Track, disables Google signals and ad
+  personalization, and sends no game state. It is never cached or intercepted by
+  the service worker, and its failure or absence cannot affect play.
 - Corrupt or unsupported saves produce a visible error and are not silently
   overwritten.
 - Cloud synchronization is explicitly out of scope.

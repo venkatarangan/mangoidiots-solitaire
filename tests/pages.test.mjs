@@ -73,6 +73,22 @@ test("Pages HTML supports nested and custom-domain base paths", async () => {
   assert.match(resume, /<base href="\.\.\/">/);
 });
 
+test("published CSP limits third-party access to Google Analytics", async () => {
+  for (const file of ["dist/index.html", "dist/resume/index.html"]) {
+    const html = await readFile(file, "utf8");
+    const policy = html.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1];
+    assert.ok(policy, `${file}: missing CSP`);
+    const directives = Object.fromEntries(policy.split(";").map((part) => part.trim().split(/\s+/)).filter(([name]) => name)
+      .map(([name, ...sources]) => [name, sources]));
+    assert.deepEqual(directives["script-src"], ["'self'", "https://www.googletagmanager.com"]);
+    assert.deepEqual(directives["connect-src"], ["'self'", "blob:", "https://*.google-analytics.com",
+      "https://*.analytics.google.com", "https://*.googletagmanager.com"]);
+    assert.deepEqual(directives["default-src"], ["'self'"]);
+    assert.deepEqual(directives["worker-src"], ["'self'"]);
+    assert.doesNotMatch(html, /<script[^>]+googletagmanager/, `${file}: the tag must load after Ready offline, not from HTML`);
+  }
+});
+
 test("manifest, theme catalog and worker are static-host compatible", async () => {
   const { version } = JSON.parse(await readFile("package.json", "utf8"));
   assert.equal((await readFile("dist/CNAME", "utf8")).trim(), "solitaire.mangoidiots.com");
