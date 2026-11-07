@@ -12,3 +12,4 @@ tools/assets/mughal/*-proof.png
 *.tmp
 .DS_Store
 Thumbs.db
+drafts/

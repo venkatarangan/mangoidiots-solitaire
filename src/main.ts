@@ -566,6 +566,18 @@ async function aboutDialog(): Promise<void> {
   source.append(repository, document.createTextNode(".")); body.append(source);
   body.append(control("p", "Free to play on GitHub Pages, with no account, advertising, or progress uploads. Google Analytics counts visits when you are online; it never affects offline play. After the first complete download, your game and downloaded themes work offline. Progress, zoom, colour and other preferences stay in this browser; cloud sync is not included.", "fine-print"));
   body.append(control("p", "An independent game, not affiliated with Microsoft. Artwork and synthesized music are creative interpretations, not historical portraits or recordings.", "fine-print"));
+  const books = control("p", "If you enjoy this game, you may also like the books by Venkatarangan Thirumalai: ", "fine-print");
+  const titles: Array<[string, string, string]> = [
+    ["The Founder Catalyst", "https://thefoundercatalyst.com/fcbook/", ", "],
+    ["Seyaligalin Kathai", "https://thefoundercatalyst.com/seyaligalinkathaibook/", " (செயலிகளின் கதை), in Tamil, and "],
+    ["Nutpam", "https://thefoundercatalyst.com/nutpambook/", " (நுட்பம்), also in Tamil."]
+  ];
+  for (const [name, href, after] of titles) {
+    const anchor = control("a", name);
+    anchor.href = href; anchor.target = "_blank"; anchor.rel = "noopener noreferrer";
+    books.append(anchor, document.createTextNode(after));
+  }
+  body.append(books);
 }
 async function themesDialog(): Promise<void> {
   await openDialog("Theme collection");
